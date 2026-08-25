@@ -47,16 +47,18 @@ Three small pieces, all plain React + CSS + the Web Animations API:
    await fly({ from: "agent", to: "server" });
    ```
 
-   `deny()` is the same but the dot hits a boundary: an ✕ pops and the dot
+   `deny()` is the same but the packet hits a boundary: an ✕ pops and it
    falls. `pulse()` and `chip()` cover acknowledgement and speech.
 
 2. **The card** — [`components/machine/Machine.tsx`](components/machine/Machine.tsx).
    White card, hard offset shadow, a stage, an optional controls row.
-   Actors drop in with a small stagger the first time it scrolls into view.
+   After you've seen the point, a **rule** stamps onto the card — the same
+   row language as the map at the end. Actors drop in with a small stagger
+   the first time it scrolls into view.
 
 3. **Goals** — [`components/machine/Goals.tsx`](components/machine/Goals.tsx).
-   An encore-style checklist next to every machine. Toys report events;
-   boxes pop when you've earned them.
+   A checklist next to every machine. Toys report events; boxes pop when
+   you've earned them.
 
 Each essay's toys live in [`components/toys/`](components/toys/) — one file
 per machine, nothing shared between essays except the kit above.
@@ -65,9 +67,9 @@ per machine, nothing shared between essays except the kit above.
 
 - **The reader does the work.** Every machine is driven by real clicks on
   real controls; goals only complete when the reader completes them.
-- **One palette, learned once.** Amber dots are requests, teal dots are
-  results, black shapes are the machines' actors, red is a boundary saying
-  no.
+- **One palette, learned once.** Amber pills are requests, teal pills are
+  results. You are a dot, the agent is a ring, a server is a cut badge,
+  red is a boundary saying no.
 - **Animation is the reward, not the wallpaper.** Nothing moves until the
   reader (or the scroll) asks for it; `prefers-reduced-motion` collapses
   everything to near-instant.

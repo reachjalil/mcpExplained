@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useStage } from "@/components/machine/stage";
-import { Machine, Actor } from "@/components/machine/Machine";
+import { Machine, Actor, Rule } from "@/components/machine/Machine";
 import { Goals, type GoalState } from "@/components/machine/Goals";
 import { RectButton } from "@/components/machine/buttons";
 
@@ -76,6 +76,14 @@ export function YouApprove() {
               </div>
             </div>
           </>
+        }
+        rule={
+          <Rule
+            show={!!goals.ok || !!goals.no}
+            pair="agent → your money"
+            ok={!!goals.ok}
+            why={goals.ok ? "you said yes" : "nothing crossed"}
+          />
         }
       >
         <Actor refCb={actor("agent")} kind="agent" name="agent" />

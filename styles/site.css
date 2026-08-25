@@ -12,6 +12,8 @@
 }
 
 .wordmark {
+  display: inline-flex;
+  align-items: center;
   font-family: var(--font-head);
   font-weight: 700;
   font-size: 1.18rem;
@@ -24,8 +26,11 @@
 }
 
 .wordmark i {
-  font-style: normal;
-  color: var(--amber);
+  width: 0.44em;
+  height: 0.44em;
+  margin-inline-start: 0.22em;
+  border-radius: 50%;
+  background: var(--amber);
 }
 
 .site-header nav {
@@ -235,8 +240,17 @@
 }
 
 .post h2 .hn {
-  color: var(--amber);
-  margin-inline-end: 0.5rem;
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.58em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  background: var(--amber);
+  padding: 0.2em 0.45em 0.14em;
+  border-radius: 4px;
+  margin-inline-end: 0.6rem;
+  vertical-align: 0.2em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -258,6 +272,23 @@
   text-wrap: pretty;
 }
 
+.post .owe {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+.post .owe a {
+  text-decoration-color: var(--line);
+}
+
+.post .owe a:hover {
+  background: none;
+  text-decoration-color: var(--ink);
+}
+
 .post strong {
   font-weight: 700;
 }
@@ -266,9 +297,9 @@
   margin: 2rem 0;
   padding: 0.9rem 1.15rem;
   border: 2px solid var(--ink);
-  border-radius: 4px;
+  border-radius: var(--card-radius);
   background: var(--card);
-  box-shadow: 5px 5px 0 var(--ink);
+  box-shadow: var(--lift);
   font-size: 0.98rem;
 }
 

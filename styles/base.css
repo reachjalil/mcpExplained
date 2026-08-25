@@ -3,14 +3,14 @@
 --------------------------------------------------------------------------- */
 
 :root {
-  --paper: #f2efe6;
-  --paper-2: #eae6d8;
-  --card: #ffffff;
+  --paper: #efebe1;
+  --paper-2: #e6e0d2;
+  --card: #fffcf6;
   --ink: #191710;
   --muted: #6f6a5c;
-  --line: #d9d4c4;
+  --line: #d6d0c2;
 
-  --amber: #d9a520;
+  --amber: #d39418;
   --teal: #2e8b6e;
   --red: #c9392b;
   --blue: #33619e;
@@ -20,6 +20,11 @@
   --font-mono: var(--font-plex), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --measure: 42rem;
+  --card-radius: 8px;
+  --print: #4a7380;
+  --lift:
+    4px 6px 0 color-mix(in oklab, var(--ink) 14%, var(--paper)),
+    10px 16px 28px -12px color-mix(in oklab, var(--ink) 30%, transparent);
   --ease-pop: cubic-bezier(0.2, 1.4, 0.4, 1);
   --ease-move: cubic-bezier(0.35, 0.75, 0.25, 1);
 
@@ -38,10 +43,13 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
 }
 
 body {
-  background: var(--paper);
+  background-color: var(--paper);
+  background-image: radial-gradient(rgba(25, 23, 16, 0.035) 0.55px, transparent 0.7px);
+  background-size: 3px 3px;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 1.14rem;
@@ -75,20 +83,21 @@ a:hover {
   text-decoration-color: var(--ink);
 }
 
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 code {
   font-family: var(--font-mono);
   font-size: 0.86em;
+  overflow-wrap: anywhere;
 }
 
 ::selection {
   background: var(--amber);
   color: var(--ink);
-}
-
-:focus-visible {
-  outline: 3px solid var(--ink);
-  outline-offset: 3px;
-  border-radius: 2px;
 }
 
 .skip-link {
@@ -146,18 +155,37 @@ code {
   font-style: normal;
 }
 
-.g-dot i {
-  width: 0.72em;
-  height: 0.72em;
-  border-radius: 50%;
+.g-pill i {
+  width: 0.58em;
+  height: 0.58em;
   background: var(--gc, var(--amber));
+  border: 0.13em solid var(--ink);
+  transform: rotate(45deg);
+  border-radius: 0.1em;
 }
 
-.g-sq i {
+.g-ring i {
+  width: 0.78em;
+  height: 0.78em;
+  border-radius: 50%;
+  border: 0.17em solid var(--gc, var(--ink));
+  background: transparent;
+}
+
+.g-badge i {
   width: 0.72em;
   height: 0.72em;
-  border-radius: 0.18em;
   background: var(--gc, var(--ink));
+  clip-path: polygon(
+    18% 0,
+    82% 0,
+    100% 18%,
+    100% 82%,
+    82% 100%,
+    18% 100%,
+    0 82%,
+    0 18%
+  );
 }
 
 .g-win i {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useStage } from "@/components/machine/stage";
-import { Machine, Actor } from "@/components/machine/Machine";
+import { Machine, Actor, Rule } from "@/components/machine/Machine";
 import { Goals, type GoalState } from "@/components/machine/Goals";
 import { ShapeButton } from "@/components/machine/buttons";
 import { G } from "@/components/ui/Glyph";
@@ -58,7 +58,18 @@ export function DirectCall() {
           },
         ]}
       />
-      <Machine stageRef={stageRef} label="One agent calling one server">
+      <Machine
+        stageRef={stageRef}
+        label="One agent calling one server"
+        rule={
+          <Rule
+            show={!!goals.answer}
+            pair="you → agent → server"
+            ok
+            why="the only wire that exists"
+          />
+        }
+      >
         <ShapeButton
           refCb={actor("you")}
           onClick={send}

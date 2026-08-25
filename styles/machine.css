@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   Machines: white cards with hard shadows, clickable shapes, flying dots
+   Machines: warm drawing boards — same paper as the site, a faint grid inside
 --------------------------------------------------------------------------- */
 
 /* --- Goals ----------------------------------------------------------------- */
@@ -31,7 +31,7 @@
   width: 1.25rem;
   height: 1.25rem;
   border: 2.5px solid var(--ink);
-  border-radius: 5px;
+  border-radius: 50%;
   background: var(--paper-2);
   display: grid;
   place-items: center;
@@ -84,12 +84,60 @@
 
 /* --- The machine card ------------------------------------------------------ */
 
+.post,
+.home {
+  counter-reset: fig;
+}
+
 .machine {
+  --plate: color-mix(in oklab, var(--amber) 2%, var(--card));
+  --grid: color-mix(in oklab, var(--print) 11%, transparent);
+  counter-increment: fig;
+  position: relative;
   margin: 1.6rem 0 2.4rem;
-  border: 2.5px solid var(--ink);
-  border-radius: 4px;
-  background: var(--card);
-  box-shadow: 8px 8px 0 var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: var(--card-radius);
+  background: var(--plate);
+}
+
+.machine::before,
+.machine::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.machine::before {
+  top: 8px;
+  left: 8px;
+  border-top: 1px solid color-mix(in oklab, var(--print) 55%, var(--line));
+  border-left: 1px solid color-mix(in oklab, var(--print) 55%, var(--line));
+}
+
+.machine::after {
+  top: 8px;
+  right: 8px;
+  border-top: 1px solid color-mix(in oklab, var(--print) 55%, var(--line));
+  border-right: 1px solid color-mix(in oklab, var(--print) 55%, var(--line));
+}
+
+.mplate {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: color-mix(in oklab, var(--print) 70%, var(--muted));
+  padding: 0.5rem 1.2rem 0.45rem;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in oklab, var(--print) 4%, var(--plate));
+}
+
+.mplate::before {
+  content: "fig. " counter(fig, decimal-leading-zero) "  ·  ";
+  font-weight: 600;
 }
 
 .machine.iv {
@@ -109,6 +157,12 @@
   padding: 2.2rem clamp(1.2rem, 5vw, 2.6rem);
   min-height: 9.5rem;
   overflow: hidden;
+  background-color: var(--plate);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: center;
 }
 
 .mrow {
@@ -124,17 +178,281 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.9rem 1.4rem;
-  padding: 0.9rem 1.3rem;
-  border-top: 2.5px solid var(--ink);
-  background: var(--card);
+  padding: 0.85rem 1.2rem;
+  border-top: 2px solid var(--ink);
+  background: var(--plate);
 }
 
 .mcap {
-  padding: 0.55rem 1.3rem 0.7rem;
-  border-top: 2px solid var(--line);
+  padding: 0.55rem 1.2rem 0.7rem;
+  border-top: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: 0.76rem;
   color: var(--muted);
+}
+
+/* --- Article overture: fig. 00, the title sequence ------------------------- */
+
+.overture {
+  counter-increment: none;
+  margin-top: 2.1rem;
+}
+
+.overture .mplate::before {
+  content: "fig. 00  ·  ";
+}
+
+.overture .mstage {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: 1fr auto 1fr;
+  grid-template-areas:
+    "weather . calendar"
+    ". agent ."
+    "you . app";
+  align-items: center;
+  justify-items: center;
+  gap: 0.35rem 1.1rem;
+  padding: 1.45rem 1.15rem 1.55rem;
+}
+
+.ov-you { grid-area: you; }
+.ov-agent { grid-area: agent; }
+.ov-weather { grid-area: weather; }
+.ov-calendar { grid-area: calendar; }
+.ov-app { grid-area: app; }
+
+.overture .act {
+  position: relative;
+  z-index: 2;
+}
+
+.owires {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+.owire {
+  fill: none;
+  stroke: color-mix(in oklab, var(--print) 42%, var(--line));
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+  stroke-linecap: round;
+  opacity: 0;
+  transition:
+    opacity 480ms var(--ease-move),
+    stroke 480ms,
+    stroke-width 480ms,
+    stroke-dasharray 480ms;
+}
+
+.owire.is-mesh {
+  opacity: 0.5;
+}
+
+.owire-live.is-cut,
+.owire-live.is-ready,
+.owire-live.is-played {
+  opacity: 0.92;
+  stroke: color-mix(in oklab, var(--amber) 50%, var(--ink));
+  stroke-width: 1.55;
+  stroke-dasharray: none;
+}
+
+.owire-dead.is-cut {
+  opacity: 0.38;
+  stroke: var(--red);
+}
+
+.owire-dead.is-ready,
+.owire-dead.is-played {
+  opacity: 0;
+}
+
+.owire-path.is-played {
+  stroke: var(--amber);
+  stroke-width: 1.85;
+}
+
+.owire-x {
+  fill: var(--red);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-head), sans-serif;
+  text-anchor: middle;
+  dominant-baseline: central;
+  opacity: 0;
+  transition: opacity 360ms;
+}
+
+.owire-x.is-cut,
+.owire-x.is-ready {
+  opacity: 0.9;
+}
+
+.owire-x.is-played {
+  opacity: 0.4;
+}
+
+.oprompt {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0.75rem 1.2rem 0.85rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--ink);
+  min-height: 3.15rem;
+}
+
+.odot {
+  flex: none;
+  width: 0.42rem;
+  height: 0.42rem;
+  margin-top: 0.45em;
+  border-radius: 50%;
+  background: var(--print);
+  opacity: 0.5;
+}
+
+.overture[data-phase="ready"] .odot {
+  background: var(--amber);
+  opacity: 1;
+  animation: hintblink 1.6s ease-in-out infinite;
+}
+
+.overture[data-phase="played"] .odot {
+  background: var(--teal);
+  opacity: 1;
+}
+
+.osylla {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 480ms var(--ease-move);
+  border-top: 0 solid var(--line);
+  background: color-mix(in oklab, var(--amber) 4%, var(--plate));
+}
+
+.osylla[data-show="true"] {
+  grid-template-rows: 1fr;
+  border-top-width: 1px;
+}
+
+.osylla-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.osylla-k {
+  margin: 0;
+  padding: 0.7rem 1.2rem 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.osylla-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  padding: 0.42rem 1.2rem;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.osylla-row:last-child {
+  padding-bottom: 0.9rem;
+}
+
+.osylla[data-show="true"] .osylla-row {
+  animation: browIn 420ms var(--ease-move) forwards;
+}
+
+.osylla[data-show="true"] .osylla-row:nth-child(2) { animation-delay: 40ms; }
+.osylla[data-show="true"] .osylla-row:nth-child(3) { animation-delay: 90ms; }
+.osylla[data-show="true"] .osylla-row:nth-child(4) { animation-delay: 140ms; }
+.osylla[data-show="true"] .osylla-row:nth-child(5) { animation-delay: 190ms; }
+.osylla[data-show="true"] .osylla-row:nth-child(6) { animation-delay: 240ms; }
+
+.osylla-n {
+  flex: none;
+  font-weight: 700;
+  font-size: 0.7em;
+  letter-spacing: 0.06em;
+  background: var(--amber);
+  padding: 0.14em 0.4em 0.08em;
+  border-radius: 3px;
+}
+
+.osylla-t {
+  font-weight: 600;
+}
+
+.osylla-h {
+  margin-inline-start: auto;
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-align: end;
+}
+
+.osylla-row:hover {
+  background: none;
+}
+
+.osylla-row:hover .osylla-t {
+  box-shadow: inset 0 -0.16em 0 var(--amber);
+}
+
+/* A rule the reader earned by clicking — opens like the approval drawer. */
+.mrule {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 380ms var(--ease-move);
+  border-top: 0 solid var(--line);
+}
+
+.mrule[data-show="true"] {
+  grid-template-rows: 1fr;
+  border-top-width: 1px;
+  background: color-mix(in oklab, var(--amber) 4%, var(--plate));
+}
+
+.mrule-inner {
+  overflow: hidden;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  min-height: 0;
+  padding: 0 1.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.mrule[data-show="true"] .mrule-inner {
+  padding-block: 0.55rem 0.65rem;
+}
+
+.mrule[data-show="true"] .bres i {
+  font-style: normal;
+  display: inline-block;
+  animation: bpop 380ms var(--ease-pop);
 }
 
 /* --- Actors ---------------------------------------------------------------- */
@@ -162,22 +480,38 @@
 }
 
 .as-server {
-  width: 3.4rem;
-  height: 3.4rem;
-  border-radius: 0.9rem;
+  width: 3.2rem;
+  height: 3.2rem;
   background: var(--ink);
+  clip-path: polygon(
+    16% 0,
+    84% 0,
+    100% 16%,
+    100% 84%,
+    84% 100%,
+    16% 100%,
+    0 84%,
+    0 16%
+  );
 }
 
 .as-agent {
-  width: 3.7rem;
-  height: 3.7rem;
+  width: 3.4rem;
+  height: 3.4rem;
   border-radius: 50%;
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--font-mono);
-  font-size: 1.7rem;
-  line-height: 1;
-  padding-bottom: 0.2rem;
+  background: transparent;
+  border: 0.38rem solid var(--ink);
+  box-sizing: border-box;
+}
+
+.as-app {
+  width: 3.35rem;
+  height: 2.65rem;
+  border: 2px solid var(--blue);
+  border-top-width: 0.58rem;
+  border-radius: 6px;
+  background: var(--card);
+  box-sizing: border-box;
 }
 
 .act.pulse .ashape {
@@ -201,11 +535,14 @@
 }
 
 /* ghosted actor (removed from the story) */
-.act.ghost .ashape {
+.act.ghost .as-agent {
+  border-color: #b7b2a2;
+  border-style: dashed;
   background: transparent;
-  outline: 3px dashed #b7b2a2;
-  outline-offset: -3px;
-  color: #b7b2a2;
+}
+
+.act.ghost .as-server {
+  background: #c5c0b3;
 }
 
 .act.ghost .alabel {
@@ -233,9 +570,12 @@
 .wall {
   position: relative;
   align-self: stretch;
-  margin-block: 0.6rem;
-  width: 0;
-  border-left: 3px dashed var(--ink);
+  margin-block: 0.5rem;
+  width: 0.7rem;
+  background-image: radial-gradient(circle closest-side, var(--ink) 1.55px, transparent 1.65px);
+  background-size: 0.7rem 0.7rem;
+  background-repeat: repeat-y;
+  background-position: center;
 }
 
 .wall .wlabel {
@@ -246,37 +586,50 @@
   font-family: var(--font-mono);
   font-size: 0.66rem;
   color: var(--muted);
-  background: var(--card);
+  background: var(--plate);
   padding-inline: 0.3rem;
   white-space: nowrap;
 }
 
-/* --- Flying dots ------------------------------------------------------------ */
+/* --- Flying packets --------------------------------------------------------- */
 
 .fdot {
   position: absolute;
   left: 0;
   top: 0;
-  width: 1.05rem;
+  width: 1.85rem;
   height: 1.05rem;
-  border-radius: 50%;
-  background: var(--amber);
-  box-shadow: 0 0 0 2px var(--card);
+  color: var(--amber);
   pointer-events: none;
   z-index: 5;
+  overflow: visible;
   will-change: transform;
 }
 
-.fdot-res {
-  background: var(--teal);
+.fdot svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.fdot[data-tag]::after {
-  content: attr(data-tag);
+.fdot path {
+  fill: currentColor;
+  stroke: var(--ink);
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.fdot-res {
+  color: var(--teal);
+}
+
+.ftag {
   position: absolute;
-  left: 1.3rem;
-  top: 50%;
-  translate: 0 -50%;
+  left: 50%;
+  top: -1.4rem;
+  translate: -50% 0;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: 600;
@@ -325,18 +678,17 @@
 }
 
 .mchip {
-  position: absolute;
-  z-index: 7;
+  position: fixed;
+  z-index: 50;
   translate: -50% -50%;
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
   background: var(--card);
-  border: 2px solid var(--ink);
+  border: 1.5px solid var(--ink);
   border-radius: 999px;
   padding: 0.16rem 0.6rem;
-  box-shadow: 3px 3px 0 var(--ink);
   pointer-events: none;
   animation: chipin 1700ms var(--ease-move) forwards;
 }
@@ -368,32 +720,32 @@
 .shape-btn {
   position: relative;
   flex: none;
-  width: 3.6rem;
-  height: 3.6rem;
+  width: 3.15rem;
+  height: 3.15rem;
   border-radius: 50%;
-  border: none;
+  border: 2.5px solid var(--ink);
   background: var(--amber);
-  box-shadow: 4px 4px 0 var(--ink);
   cursor: pointer;
   transition: transform 120ms, box-shadow 120ms;
 }
 
+.shape-btn.is-hint {
+  animation: dotpulse 1.8s ease-in-out infinite;
+}
+
+@keyframes dotpulse {
+  50% {
+    box-shadow: 0 0 0 7px color-mix(in oklab, var(--amber) 32%, transparent);
+  }
+}
+
 .shape-btn:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0 var(--ink);
+  transform: scale(1.05);
+  animation: none;
 }
 
 .shape-btn:active {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 0 var(--ink);
-}
-
-.shape-btn .cursor {
-  position: absolute;
-  right: -0.85rem;
-  bottom: -0.8rem;
-  width: 1.5rem;
-  pointer-events: none;
+  transform: scale(0.96);
 }
 
 .click-hint {
@@ -417,22 +769,20 @@
   font-family: var(--font-mono);
   font-size: 0.86rem;
   font-weight: 600;
-  padding: 0.55rem 1rem;
-  background: var(--card);
-  border: 2.5px solid var(--ink);
-  border-radius: 6px;
-  box-shadow: 3px 3px 0 var(--ink);
+  padding: 0.5rem 0.95rem;
+  background: var(--plate);
+  border: 2px solid var(--ink);
+  border-radius: 5px;
   cursor: pointer;
-  transition: transform 110ms, box-shadow 110ms, background 150ms;
+  transition: transform 110ms, background 150ms;
 }
 
 .rect-btn:hover:not(:disabled) {
-  background: var(--paper);
+  background: color-mix(in oklab, var(--amber) 18%, var(--plate));
 }
 
 .rect-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--ink);
+  transform: scale(0.98);
 }
 
 .rect-btn:disabled {
@@ -445,7 +795,7 @@
 }
 
 .rect-btn[data-tone="red"] {
-  background: var(--card);
+  background: var(--plate);
   color: var(--red);
 }
 
@@ -459,6 +809,7 @@
   font-size: 0.82rem;
   cursor: pointer;
   user-select: none;
+  max-width: 100%;
 }
 
 .mtoggle input {
@@ -509,10 +860,9 @@
 
 .appwin {
   width: 10rem;
-  border: 2.5px solid var(--ink);
+  border: 2px solid var(--ink);
   border-radius: 8px;
   background: var(--card);
-  box-shadow: 4px 4px 0 var(--ink);
   overflow: hidden;
 }
 
@@ -578,14 +928,12 @@
   background: var(--paper);
   border: 2px solid var(--ink);
   border-radius: 5px;
-  box-shadow: 2px 2px 0 var(--ink);
   cursor: pointer;
-  transition: transform 100ms, box-shadow 100ms;
+  transition: transform 100ms;
 }
 
 .appwin .mini-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 0 0 0 var(--ink);
+  transform: scale(0.97);
 }
 
 .appwin .app-err {
@@ -607,7 +955,7 @@
 
 .drawer[data-open="true"] {
   grid-template-rows: 1fr;
-  border-top-width: 2.5px;
+  border-top-width: 1px;
 }
 
 .drawer > div {
@@ -619,8 +967,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.8rem 1.2rem;
-  padding: 0.95rem 1.3rem;
-  background: #fff8e6;
+  padding: 0.85rem 1.1rem;
+  background: color-mix(in oklab, var(--amber) 10%, var(--plate));
 }
 
 .drawer-inner .dq {
@@ -639,11 +987,35 @@
 
 .bmap {
   margin: 1.8rem 0 2.2rem;
-  border: 2.5px solid var(--ink);
-  border-radius: 4px;
-  background: var(--card);
-  box-shadow: 8px 8px 0 var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: var(--card-radius);
+  background: color-mix(in oklab, var(--amber) 2%, var(--card));
   overflow: hidden;
+  position: relative;
+}
+
+.bmap::before,
+.bmap::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.bmap::before {
+  top: 8px;
+  left: 8px;
+  border-top: 1px solid color-mix(in oklab, var(--print) 55%, var(--line));
+  border-left: 1px solid color-mix(in oklab, var(--print) 55%, var(--line));
+}
+
+.bmap::after {
+  top: 8px;
+  right: 8px;
+  border-top: 1px solid color-mix(in oklab, var(--print) 55%, var(--line));
+  border-right: 1px solid color-mix(in oklab, var(--print) 55%, var(--line));
 }
 
 .brow {
@@ -653,7 +1025,7 @@
   padding: 0.8rem 1.3rem;
   font-family: var(--font-mono);
   font-size: 0.95rem;
-  border-bottom: 2px solid var(--line);
+  border-bottom: 1px solid var(--line);
   opacity: 0;
   transform: translateX(-10px);
 }
@@ -679,12 +1051,14 @@
   }
 }
 
-.brow .bpair {
+.brow .bpair,
+.mrule .bpair {
   font-weight: 600;
   min-width: 11.5rem;
 }
 
-.brow .bres {
+.brow .bres,
+.mrule .bres {
   font-weight: 700;
   font-size: 1.05rem;
   position: relative;
@@ -741,7 +1115,8 @@
   }
 }
 
-.brow .bwhy {
+.brow .bwhy,
+.mrule .bwhy {
   margin-inline-start: auto;
   color: var(--muted);
   font-size: 0.78rem;
@@ -749,8 +1124,30 @@
 }
 
 @media (max-width: 40rem) {
-  .brow .bwhy {
+  .brow .bwhy,
+  .mrule .bwhy,
+  .osylla-h {
     display: none;
+  }
+
+  .brow .bpair,
+  .mrule .bpair {
+    min-width: 0;
+  }
+
+  .appwin {
+    width: 7.4rem;
+  }
+
+  .mstage {
+    gap: 0.55rem;
+    padding-inline: 0.9rem;
+  }
+
+  .overture .mstage {
+    min-height: 16.5rem !important;
+    gap: 0.2rem 0.45rem;
+    padding: 1.1rem 0.55rem 1.2rem;
   }
 }
 
@@ -758,8 +1155,16 @@
   .machine.in .act,
   .bmap.in .brow,
   .bmap.in .bres i,
-  .click-hint {
+  .mrule[data-show="true"] .bres i,
+  .shape-btn.is-hint,
+  .click-hint,
+  .osylla[data-show="true"] .osylla-row,
+  .overture[data-phase="ready"] .odot {
     animation-duration: 1ms !important;
     animation-delay: 0ms !important;
+  }
+
+  .owire {
+    transition: none;
   }
 }

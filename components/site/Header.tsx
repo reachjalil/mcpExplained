@@ -5,7 +5,7 @@ export function Header() {
   return (
     <header className="site-header">
       <Link href="/" className="wordmark">
-        mcpexplained<i>.</i>
+        mcpexplained<i aria-hidden="true" />
       </Link>
       <nav>
         <a href={REPO_URL} target="_blank" rel="noreferrer noopener">

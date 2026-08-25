@@ -3,14 +3,15 @@
 import { useEffect, useRef, type ReactNode } from "react";
 
 /**
- * The white card every toy lives in: hard offset shadow, a stage for actors
- * and dots, an optional controls row and caption. Adds `in` on first view so
- * actors drop in with a small stagger (see machine.css).
+ * A labeled plate every toy lives in: hairline frame, a stage on graph paper,
+ * optional controls, a rule that stamps in after you see it, and a caption.
+ * Adds `in` on first view so actors drop in with a small stagger.
  */
 export function Machine({
   stageRef,
   children,
   controls,
+  rule,
   caption,
   minHeight = 152,
   label,
@@ -18,6 +19,7 @@ export function Machine({
   stageRef: React.RefObject<HTMLDivElement | null>;
   children: ReactNode;
   controls?: ReactNode;
+  rule?: ReactNode;
   caption?: ReactNode;
   minHeight?: number;
   label: string;
@@ -46,10 +48,12 @@ export function Machine({
 
   return (
     <figure ref={rootRef} className="machine" role="group" aria-label={label}>
+      <div className="mplate">{label}</div>
       <div className="mstage" ref={stageRef} style={{ minHeight }}>
         {children}
       </div>
       {controls ? <div className="mcontrols">{controls}</div> : null}
+      {rule}
       {caption ? <figcaption className="mcap">{caption}</figcaption> : null}
     </figure>
   );
@@ -61,17 +65,17 @@ export function Actor({
   kind,
   name,
   ghost = false,
+  className = "",
 }: {
   refCb: (el: HTMLElement | null) => void;
   kind: "server" | "agent";
   name: string;
   ghost?: boolean;
+  className?: string;
 }) {
   return (
-    <div className={ghost ? "act ghost" : "act"}>
-      <span className={`ashape as-${kind}`} ref={refCb}>
-        {kind === "agent" ? "✳" : null}
-      </span>
+    <div className={["act", ghost ? "ghost" : "", className].filter(Boolean).join(" ")}>
+      <span className={`ashape as-${kind}`} ref={refCb} />
       <span className="alabel">{name}</span>
     </div>
   );
@@ -81,6 +85,34 @@ export function Wall({ label }: { label?: string }) {
   return (
     <div className="wall" aria-hidden="true">
       {label ? <span className="wlabel">{label}</span> : null}
+    </div>
+  );
+}
+
+/**
+ * The takeaway a machine mints after you've seen it. Same row language as
+ * the boundary map — click, watch, keep the rule.
+ */
+export function Rule({
+  show,
+  pair,
+  ok,
+  why,
+}: {
+  show: boolean;
+  pair: string;
+  ok: boolean;
+  why?: string;
+}) {
+  return (
+    <div className="mrule" data-show={show}>
+      <div className="mrule-inner">
+        <span className="bpair">{pair}</span>
+        <span className="bres" data-r={ok ? "yes" : "no"} aria-live="polite">
+          <i>{ok ? "✓" : "✕"}</i>
+        </span>
+        {why ? <span className="bwhy">{why}</span> : null}
+      </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useStage } from "@/components/machine/stage";
-import { Machine, Actor } from "@/components/machine/Machine";
+import { Machine, Actor, Rule } from "@/components/machine/Machine";
 import { Goals, type GoalState } from "@/components/machine/Goals";
 import { RectButton, Toggle } from "@/components/machine/buttons";
 
@@ -53,7 +53,7 @@ export function TwoHops() {
           },
           {
             id: "ghost",
-            label: <>Remove the ✳ agent and try again.</>,
+            label: <>Remove the agent and try again.</>,
           },
         ]}
       />
@@ -69,6 +69,14 @@ export function TwoHops() {
               remove the agent
             </Toggle>
           </>
+        }
+        rule={
+          <Rule
+            show={!!goals.chain || !!goals.ghost}
+            pair="flights → calendar"
+            ok={!!goals.chain}
+            why={goals.chain ? "through the agent" : "no path"}
+          />
         }
       >
         <Actor refCb={actor("flights")} kind="server" name="flights" />

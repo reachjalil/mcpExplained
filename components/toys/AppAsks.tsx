@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useStage } from "@/components/machine/stage";
-import { Machine, Actor } from "@/components/machine/Machine";
+import { Machine, Actor, Rule } from "@/components/machine/Machine";
 import { Goals, type GoalState } from "@/components/machine/Goals";
 import { Toggle } from "@/components/machine/buttons";
 import { G } from "@/components/ui/Glyph";
@@ -76,6 +76,14 @@ export function AppAsks() {
           <Toggle checked={allowed} onChange={setAllowed}>
             app may call <code>refresh_prices</code>
           </Toggle>
+        }
+        rule={
+          <Rule
+            show={!!goals.refresh || !!goals.denied}
+            pair="app → server"
+            ok={false}
+            why="asks the agent instead"
+          />
         }
         caption="the button lives inside the app — but the request still goes the long way round"
       >

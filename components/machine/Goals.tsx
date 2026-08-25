@@ -10,7 +10,7 @@ export type GoalDef = {
 
 export type GoalState = Record<string, number>;
 
-/** Encore-style checklist: checkbox pops when a goal completes; counted
+/** Checklist above a machine. Boxes pop when a goal completes; counted
  *  goals show an n/N pill that fills as you go. */
 export function Goals({ items, state }: { items: GoalDef[]; state: GoalState }) {
   return (

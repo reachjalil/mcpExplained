@@ -13,12 +13,14 @@ export function InView({
   className = "",
   delay = 0,
   threshold = 0.25,
+  id,
 }: {
   children: ReactNode;
   as?: "div" | "section" | "h2" | "figure";
   className?: string;
   delay?: number;
   threshold?: number;
+  id?: string;
 }) {
   const ref = useRef<HTMLElement | null>(null);
 
@@ -46,6 +48,7 @@ export function InView({
     <Tag
       ref={ref as React.RefObject<HTMLDivElement>}
       className={className}
+      id={id}
       style={delay ? ({ "--iv-delay": `${delay}ms` } as React.CSSProperties) : undefined}
     >
       {children}

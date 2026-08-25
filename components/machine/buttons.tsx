@@ -2,37 +2,29 @@
 
 import type { ReactNode } from "react";
 
-/** The amber circle you click — with the little drawn cursor, like a finger
- *  hovering over the machine. */
+/** The brand dot, at clickable size. */
 export function ShapeButton({
   onClick,
   hint,
   label,
   refCb,
+  className = "",
 }: {
   onClick: () => void;
   hint?: boolean;
   label: string;
   refCb?: (el: HTMLElement | null) => void;
+  className?: string;
 }) {
   return (
-    <div className="act">
+    <div className={["act", className].filter(Boolean).join(" ")}>
       <button
         type="button"
-        className="shape-btn"
+        className={hint ? "shape-btn is-hint" : "shape-btn"}
         onClick={onClick}
         aria-label={label}
         ref={refCb}
-      >
-        <svg className="cursor" viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M5 2 L19 12.5 L12.6 13.6 L16 21 L13 22.3 L9.6 15 L5 19.5 Z"
-            fill="#191710"
-            stroke="#f2efe6"
-            strokeWidth="1.6"
-          />
-        </svg>
-      </button>
+      />
       <span className="alabel">{hint ? <span className="click-hint">click</span> : "you"}</span>
     </div>
   );

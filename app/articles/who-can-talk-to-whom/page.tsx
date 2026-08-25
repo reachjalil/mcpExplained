@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { InView } from "@/components/ui/InView";
 import { G } from "@/components/ui/Glyph";
+import { TalkOverture } from "@/components/toys/TalkOverture";
 import { DirectCall } from "@/components/toys/DirectCall";
 import { ServerWall } from "@/components/toys/ServerWall";
 import { TwoHops } from "@/components/toys/TwoHops";
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 
 function H2({ n, children }: { n: string; children: string }) {
   return (
-    <InView as="h2" threshold={0.9}>
+    <InView as="h2" threshold={0.9} id={`s-${n}`}>
       <span className="hn">{n}</span>
       <span className="hu">{children}</span>
     </InView>
@@ -40,18 +41,23 @@ export default function Article() {
         </div>
       </header>
 
-      <p>
-        There are four characters in every MCP story. <strong>You</strong>, the
-        person with a goal. An <G k="agent">agent</G>, working on your behalf.
-        Some <G k="server">servers</G>, each holding one capability — weather,
-        flights, a calendar. And sometimes an <G k="app">app</G>: a little
-        piece of UI a server ships to your screen.
-      </p>
+      <TalkOverture />
+
       <p>
         Almost everything confusing about the protocol untangles if you track a
-        single thing: <strong>who is allowed to talk to whom</strong>. That is
-        the whole article. And to show you, I&apos;m going to need your help —
-        you&apos;ll be doing the clicking.
+        single thing: <strong>who is allowed to talk to whom</strong>. The
+        machines below are that question, one boundary at a time — and to show
+        you, I&apos;m going to need your help.
+      </p>
+      <p className="owe">
+        With a nod to{" "}
+        <a
+          href="https://encore.dev/blog/queueing"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          Sam Rose&apos;s queueing essay</a>
+        .
       </p>
 
       {/* ----------------------------------------------------------------- */}
@@ -152,7 +158,7 @@ export default function Article() {
 
       {/* ----------------------------------------------------------------- */}
       <H2 n="06">The map</H2>
-      <p>Every machine above is one row of the same small table.</p>
+      <p>Each machine writes a rule. Here they are together.</p>
       <BoundaryMap />
       <p>
         Memorize the table and you&apos;ve memorized the architecture: one

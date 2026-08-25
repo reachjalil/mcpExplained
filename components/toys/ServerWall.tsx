@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useStage } from "@/components/machine/stage";
-import { Machine, Actor, Wall } from "@/components/machine/Machine";
+import { Machine, Actor, Wall, Rule } from "@/components/machine/Machine";
 import { Goals, type GoalState } from "@/components/machine/Goals";
 import { RectButton } from "@/components/machine/buttons";
 import { G } from "@/components/ui/Glyph";
@@ -53,6 +53,14 @@ export function ServerWall() {
           <RectButton onClick={attempt} disabled={busy}>
             make flights call calendar
           </RectButton>
+        }
+        rule={
+          <Rule
+            show={!!goals.blocked}
+            pair="server → server"
+            ok={false}
+            why="strangers by design"
+          />
         }
       >
         <Actor refCb={actor("flights")} kind="server" name="flights" />

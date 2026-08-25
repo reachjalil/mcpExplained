@@ -4,6 +4,19 @@ import { useCallback, useRef } from "react";
 
 type Pt = { x: number; y: number };
 
+const pose = (x: number, y: number, ang: number, s = 1) =>
+  `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${ang}deg) scale(${s})`;
+
+function spawnPacket(kind: "req" | "res" = "req") {
+  const el = document.createElement("span");
+  el.className = `fdot${kind === "res" ? " fdot-res" : ""}`;
+  el.innerHTML =
+    kind === "res"
+      ? `<svg viewBox="0 0 28 16" aria-hidden="true"><path d="M3.6 8 L8.2 2.6 H19.8 L24.4 8 L19.8 13.4 H8.2 Z"/></svg>`
+      : `<svg viewBox="0 0 28 16" aria-hidden="true"><path d="M14 1.4 L26.2 8 L14 14.6 L1.8 8 Z"/></svg>`;
+  return el;
+}
+
 export type FlyOpts = {
   from: string;
   to: string;
@@ -18,7 +31,7 @@ export type FlyOpts = {
 
 /**
  * The animation heart of every machine. Actors register DOM nodes by name;
- * `fly` spawns a dot and moves it between actor centres with WAAPI, resolving
+ * `fly` spawns a packet and moves it between actor centres with WAAPI, resolving
  * when it lands, so choreography reads as plain async code:
  *
  *   await fly({ from: "app", to: "agent" });
@@ -31,8 +44,12 @@ export function useStage() {
 
   const actor = useCallback(
     (name: string) => (el: HTMLElement | null) => {
-      if (el) actors.current.set(name, el);
-      else actors.current.delete(name);
+      if (el) {
+        el.dataset.actor = name;
+        actors.current.set(name, el);
+      } else {
+        actors.current.delete(name);
+      }
     },
     [],
   );
@@ -60,49 +77,44 @@ export function useStage() {
       const a = centerOf(from);
       const b = centerOf(to);
       const end = { x: a.x + (b.x - a.x) * until, y: a.y + (b.y - a.y) * until };
+      const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
 
-      const dot = document.createElement("span");
-      dot.className = `fdot${kind === "res" ? " fdot-res" : ""}`;
-      if (tag) dot.dataset.tag = tag;
-      stage.appendChild(dot);
+      const packet = spawnPacket(kind);
+      if (tag) {
+        const lab = document.createElement("span");
+        lab.className = "ftag";
+        lab.textContent = tag;
+        lab.style.transform = `rotate(${-ang}deg)`;
+        packet.appendChild(lab);
+      }
+      stage.appendChild(packet);
 
       const dur = reduced() ? 60 : duration * until;
-      const anim = dot.animate(
+      const anim = packet.animate(
         [
-          {
-            transform: `translate(${a.x}px, ${a.y}px) translate(-50%, -50%) scale(0.3)`,
-            opacity: 0,
-          },
-          {
-            transform: `translate(${a.x}px, ${a.y}px) translate(-50%, -50%) scale(1)`,
-            opacity: 1,
-            offset: 0.15,
-          },
-          {
-            transform: `translate(${end.x}px, ${end.y}px) translate(-50%, -50%) scale(1)`,
-            opacity: 1,
-          },
+          { transform: pose(a.x, a.y, ang, 0.3), opacity: 0 },
+          { transform: pose(a.x, a.y, ang, 1), opacity: 1, offset: 0.15 },
+          { transform: pose(end.x, end.y, ang, 1), opacity: 1 },
         ],
         { duration: dur, easing: "cubic-bezier(.35,.75,.25,1)", fill: "forwards" },
       );
       await anim.finished.catch(() => {});
 
-      // Landed: shrink into the destination (or hang at the wall for a beat).
-      const out = dot.animate(
+      const out = packet.animate(
         [
-          { transform: `translate(${end.x}px, ${end.y}px) translate(-50%, -50%) scale(1)`, opacity: 1 },
-          { transform: `translate(${end.x}px, ${end.y}px) translate(-50%, -50%) scale(0.4)`, opacity: 0 },
+          { transform: pose(end.x, end.y, ang, 1), opacity: 1 },
+          { transform: pose(end.x, end.y, ang, 0.4), opacity: 0 },
         ],
         { duration: reduced() ? 40 : 200, easing: "ease-in", fill: "forwards" },
       );
       await out.finished.catch(() => {});
-      dot.remove();
+      packet.remove();
       return end;
     },
     [centerOf],
   );
 
-  /** A call that hits a boundary: travels partway, ✕ pops, the dot falls. */
+  /** A call that hits a boundary: travels partway, ✕ pops, the packet falls. */
   const deny = useCallback(
     async ({ from, to, until = 0.5, duration = 620 }: FlyOpts) => {
       const stage = stageRef.current;
@@ -110,23 +122,22 @@ export function useStage() {
       const a = centerOf(from);
       const b = centerOf(to);
       const end = { x: a.x + (b.x - a.x) * until, y: a.y + (b.y - a.y) * until };
+      const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
 
-      const dot = document.createElement("span");
-      dot.className = "fdot";
-      stage.appendChild(dot);
+      const packet = spawnPacket("req");
+      stage.appendChild(packet);
 
       const slow = reduced();
-      const anim = dot.animate(
+      const anim = packet.animate(
         [
-          { transform: `translate(${a.x}px, ${a.y}px) translate(-50%, -50%) scale(0.3)`, opacity: 0 },
-          { transform: `translate(${a.x}px, ${a.y}px) translate(-50%, -50%) scale(1)`, opacity: 1, offset: 0.15 },
-          { transform: `translate(${end.x}px, ${end.y}px) translate(-50%, -50%) scale(1)`, opacity: 1 },
+          { transform: pose(a.x, a.y, ang, 0.3), opacity: 0 },
+          { transform: pose(a.x, a.y, ang, 1), opacity: 1, offset: 0.15 },
+          { transform: pose(end.x, end.y, ang, 1), opacity: 1 },
         ],
         { duration: slow ? 60 : duration * until, easing: "cubic-bezier(.4,.6,.5,1)", fill: "forwards" },
       );
       await anim.finished.catch(() => {});
 
-      // ✕ pops at the boundary…
       const x = document.createElement("span");
       x.className = "popx";
       x.textContent = "✕";
@@ -135,25 +146,24 @@ export function useStage() {
       stage.appendChild(x);
       window.setTimeout(() => x.remove(), 950);
 
-      // …and the dot bounces back a little, then drops.
       const back = Math.sign(a.x - b.x) * 42;
-      const fall = dot.animate(
+      const fall = packet.animate(
         [
-          { transform: `translate(${end.x}px, ${end.y}px) translate(-50%, -50%) scale(1)`, opacity: 1 },
+          { transform: pose(end.x, end.y, ang, 1), opacity: 1 },
           {
-            transform: `translate(${end.x + back}px, ${end.y + 8}px) translate(-50%, -50%) scale(0.9)`,
+            transform: pose(end.x + back, end.y + 8, ang + 28, 0.9),
             opacity: 1,
             offset: 0.45,
           },
           {
-            transform: `translate(${end.x + back * 1.3}px, ${end.y + 44}px) translate(-50%, -50%) scale(0.7)`,
+            transform: pose(end.x + back * 1.3, end.y + 44, ang + 70, 0.7),
             opacity: 0,
           },
         ],
         { duration: slow ? 40 : 520, easing: "cubic-bezier(.3,.6,.6,1)", fill: "forwards" },
       );
       await fall.finished.catch(() => {});
-      dot.remove();
+      packet.remove();
     },
     [centerOf],
   );
@@ -170,22 +180,36 @@ export function useStage() {
     window.setTimeout(() => host.classList.remove(cls), 600);
   }, []);
 
-  /** Transient mono chip above an actor: chip("agent", "app-visible ✓", "res"). */
+  /** Transient mono chip above an actor. Portaled to the body so the board
+   *  frame never clips it; clamped so it stays on screen. */
   const chip = useCallback(
     (name: string, text: string, tone: "res" | "deny" | "ink" = "ink", dy = -44) => {
-      const stage = stageRef.current;
-      if (!stage) return;
-      const p = centerOf(name);
+      const host = actors.current.get(name);
+      if (!host) return;
+      const r = host.getBoundingClientRect();
       const el = document.createElement("span");
       el.className = "mchip";
       el.dataset.tone = tone;
       el.textContent = text;
-      el.style.left = `${p.x}px`;
-      el.style.top = `${p.y + dy}px`;
-      stage.appendChild(el);
+      el.style.left = `${r.left + r.width / 2}px`;
+      el.style.top = `${r.top + r.height / 2 + dy}px`;
+      document.body.appendChild(el);
+      const w = el.offsetWidth;
+      const h = el.offsetHeight;
+      const pad = 12;
+      const x = Math.min(
+        window.innerWidth - pad - w / 2,
+        Math.max(pad + w / 2, r.left + r.width / 2),
+      );
+      const y = Math.min(
+        window.innerHeight - pad - h / 2,
+        Math.max(pad + h / 2, r.top + r.height / 2 + dy),
+      );
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
       window.setTimeout(() => el.remove(), 1750);
     },
-    [centerOf],
+    [],
   );
 
   const wait = (ms: number) =>

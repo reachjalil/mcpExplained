@@ -1,19 +1,19 @@
 import type { ReactNode } from "react";
 
-type Kind = "dot" | "sq" | "win" | "x";
+type Kind = "pill" | "ring" | "badge" | "win" | "x";
 
 const PRESETS: Record<string, { kind: Kind; c: string }> = {
-  request: { kind: "dot", c: "amber" },
-  result: { kind: "dot", c: "teal" },
-  agent: { kind: "dot", c: "ink" },
-  server: { kind: "sq", c: "ink" },
+  request: { kind: "pill", c: "amber" },
+  result: { kind: "pill", c: "teal" },
+  agent: { kind: "ring", c: "ink" },
+  server: { kind: "badge", c: "ink" },
   app: { kind: "win", c: "blue" },
   blocked: { kind: "x", c: "red" },
 };
 
 /**
  * Inline glyph + word, matching the shapes inside the machines:
- * <G k="request">request</G> renders an amber dot before the word.
+ * <G k="request">request</G> renders an amber pill before the word.
  */
 export function G({ k, children }: { k: keyof typeof PRESETS; children: ReactNode }) {
   const p = PRESETS[k];
