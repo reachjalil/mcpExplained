@@ -2,36 +2,28 @@
 
 import { useEffect, useRef, type ReactNode, type RefObject } from "react";
 
-export type SyllabusItem = {
-  n: string;
-  title: string;
-  hint: string;
-  href: string;
-};
-
 /**
- * Title sequence every article opens with: a drawing board, a prompt to act,
- * and a syllabus that stamps in after the reader has done the first click.
- * Fig. 00 — does not increment the machine counter.
+ * Fig. 00 — the plate an article opens on: a stage, and one line of prompt
+ * whose copy changes as you act.
+ *
+ * Deliberately fixed height. Nothing expands, stamps in, or opens under the
+ * board after a click, so the article below never jumps. The prompt reserves
+ * two lines from first paint for the same reason.
  */
 export function Overture({
   label,
   stageRef,
   children,
   prompt,
-  syllabus,
-  showSyllabus,
-  minHeight = 280,
-  phase,
+  tone,
+  minHeight = 168,
 }: {
   label: string;
   stageRef: RefObject<HTMLDivElement | null>;
   children: ReactNode;
   prompt: ReactNode;
-  syllabus: SyllabusItem[];
-  showSyllabus: boolean;
+  tone: "ask" | "blocked" | "done";
   minHeight?: number;
-  phase: string;
 }) {
   const rootRef = useRef<HTMLElement>(null);
 
@@ -59,7 +51,7 @@ export function Overture({
     <figure
       ref={rootRef}
       className="machine overture"
-      data-phase={phase}
+      data-tone={tone}
       role="group"
       aria-label={label}
     >
@@ -71,18 +63,6 @@ export function Overture({
         <i className="odot" aria-hidden="true" />
         <span>{prompt}</span>
       </p>
-      <div className="osylla" data-show={showSyllabus}>
-        <div className="osylla-inner">
-          <p className="osylla-k">you&apos;ll prove these by clicking</p>
-          {syllabus.map((row) => (
-            <a className="osylla-row" href={row.href} key={row.n}>
-              <span className="osylla-n">{row.n}</span>
-              <span className="osylla-t">{row.title}</span>
-              <span className="osylla-h">{row.hint}</span>
-            </a>
-          ))}
-        </div>
-      </div>
     </figure>
   );
 }
