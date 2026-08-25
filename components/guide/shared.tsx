@@ -46,12 +46,12 @@ export function GCard({
           <code key={m}>{m}</code>
         ))}
       </p>
-      {children}
       <ul className="gfacts">
         {facts.map((f, i) => (
           <li key={i}>{f}</li>
         ))}
       </ul>
+      {children}
       <p className="specref">
         <b>spec</b>
         <a href={spec} target="_blank" rel="noreferrer noopener">

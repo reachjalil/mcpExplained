@@ -5,21 +5,25 @@
 --------------------------------------------------------------------------- */
 
 .guide {
-  max-width: 82rem;
+  max-width: 102rem;
   margin-inline: auto;
-  padding: 0 1.25rem;
+  padding: 0 clamp(1.25rem, 2.5vw, 3rem);
 }
 
 @media (min-width: 68rem) {
   .guide {
     display: grid;
-    grid-template-columns: 12.5rem minmax(0, 1fr);
-    gap: 2.6rem;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 2.2rem;
     align-items: start;
   }
 }
 
 .gpost {
+  /* the essay class caps .post at the measure; the guide runs wide */
+  max-width: none;
+  margin: 0;
+  padding: 0;
   min-width: 0;
 }
 
@@ -182,15 +186,9 @@
 
 .gcols {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0 2.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+  gap: 0 2.6rem;
   margin-top: 1rem;
-}
-
-@media (min-width: 72rem) {
-  .gcols {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 .gcol {
@@ -328,8 +326,14 @@
   margin: 1rem 0 1.1rem;
 }
 
+/* machines and wire logs stay hand-sized even when their column is huge */
+.gpost .machine,
+.gpost .wire {
+  max-width: 46rem;
+}
+
 .gcard .mstage {
-  padding: 1.5rem clamp(1rem, 3vw, 1.8rem);
+  padding: 1.6rem clamp(1.1rem, 2vw, 2.2rem);
 }
 
 .gcard .mcontrols {
@@ -369,14 +373,8 @@
 /* status + references sit side by side on wide screens */
 .gmeta2 {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0 2.2rem;
-}
-
-@media (min-width: 72rem) {
-  .gmeta2 {
-    grid-template-columns: 1fr 1fr;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  gap: 0 2.6rem;
 }
 
 /* --- Demo artifacts: the per-concept visuals --------------------------------- */
