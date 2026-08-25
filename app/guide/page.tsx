@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { G } from "@/components/ui/Glyph";
 import { WireBlock } from "@/components/ui/WireBlock";
-import { GCard, GWide } from "@/components/guide/shared";
+import { GCard, GFacts, GWide } from "@/components/guide/shared";
 import { HandshakeDemo } from "@/components/guide/HandshakeDemo";
 import { ToolsDemo } from "@/components/guide/ToolsDemo";
 import { ResourcesDemo } from "@/components/guide/ResourcesDemo";
@@ -15,7 +14,7 @@ import { ProgressDemo } from "@/components/guide/ProgressDemo";
 export const metadata: Metadata = {
   title: "A guide to MCP",
   description:
-    "Every MCP concept on one page: tools, resources, prompts, sampling, elicitation, roots, progress. Definitions, fact lists, spec links, and a runnable demo for each.",
+    "Every MCP concept, split the way the protocol is split: server on one side, agent on the other. Methods, facts, spec links, and a runnable demo for each.",
 };
 
 const SPEC = "https://modelcontextprotocol.io";
@@ -26,13 +25,13 @@ function Toc() {
       <p className="gtoc-k">basics</p>
       <a href="#g-basics">the session</a>
       <p className="gtoc-k">
-        <i data-g="server" aria-hidden="true" /> the server offers
+        <i data-g="server" aria-hidden="true" /> the server
       </p>
       <a href="#g-tools">tools</a>
       <a href="#g-resources">resources</a>
       <a href="#g-prompts">prompts</a>
       <p className="gtoc-k">
-        <i data-g="host" aria-hidden="true" /> the host offers back
+        <i data-g="host" aria-hidden="true" /> the agent
       </p>
       <a href="#g-sampling">sampling</a>
       <a href="#g-elicitation">elicitation</a>
@@ -71,9 +70,7 @@ export default function Guide() {
           </span>
           <h1>A guide to MCP</h1>
           <p className="stand">
-            Every concept in the Model Context Protocol: a definition, the
-            facts that matter, the spec link, and a demo whose animation shows
-            the mechanism.
+            What each piece is, who calls it, and a demo you can run.
           </p>
           <div className="post-meta">
             <span>updated august 25, 2026</span>
@@ -90,12 +87,20 @@ export default function Guide() {
           ))}
         </p>
 
-        <p>
-          One <G k="agent">host</G> holds every connection, one per{" "}
-          <G k="server">server</G>. The model lives inside the host and only
-          writes text. Why the wiring looks like that has{" "}
-          <Link href="/articles/who-can-talk-to-whom/">its own essay</Link>;
-          this page is for looking things up.
+        <p className="gcast" aria-label="How to read the figures">
+          <span>
+            <i data-g="host" aria-hidden="true" /> agent · host
+          </span>
+          <span>
+            <i data-g="server" aria-hidden="true" /> server
+          </span>
+          <span>
+            <i className="c-req" aria-hidden="true" /> request
+          </span>
+          <span>
+            <i className="c-res" aria-hidden="true" /> result
+          </span>
+          <span>every figure runs · click things</span>
         </p>
 
         {/* ------------------------------------------------------------- */}
@@ -104,11 +109,13 @@ export default function Guide() {
             <code>initialize</code>
             <code>notifications/initialized</code>
           </p>
-          <p>
-            The client opens with <code>initialize</code>, naming its protocol
-            version and capabilities; the server answers with its own. Neither
-            side may use anything the other didn&apos;t declare.
-          </p>
+          <GFacts
+            items={[
+              { k: "opens with", v: <><code>initialize</code>: protocol version and capabilities, both directions</> },
+              { k: "the rule", v: <>use nothing the other side didn&apos;t declare</> },
+              { k: "shape", v: <>one session · one client · one server</> },
+            ]}
+          />
           <HandshakeDemo />
           <WireBlock label="on the wire · the handshake, trimmed">
             <b>→ initialize</b>{"\n"}
@@ -140,8 +147,8 @@ export default function Guide() {
           <div className="gcol">
             <h2 className="gcol-h" id="g-server-side">
               <i data-g="server" aria-hidden="true" />
-              the server offers
-              <span>model · host · person</span>
+              the server
+              <span>the capability you plug in</span>
             </h2>
 
             <GCard
@@ -149,26 +156,11 @@ export default function Guide() {
               side="server"
               title="Tools"
               methods={["tools/list", "tools/call", "…/list_changed"]}
-              def={
-                <>
-                  A function with a name, a description, and a JSON schema for
-                  its arguments.
-                </>
-              }
               facts={[
-                <>
-                  <b>called by</b> the model, executed by the host
-                </>,
-                <>
-                  <b>side effects</b> live here; approvals apply here first
-                </>,
-                <>
-                  whatever <code>tools/list</code> returned is the whole
-                  universe
-                </>,
-                <>
-                  the set changes via <code>list_changed</code>, never silently
-                </>,
+                { k: "is", v: <>a function with a name and a JSON schema for its arguments</> },
+                { k: "called by", v: <>the model; the host executes</> },
+                { k: "effects", v: <>yes, they live here; approvals apply here first</> },
+                { k: "discover", v: <><code>tools/list</code> is the whole universe; <code>list_changed</code> announces edits</> },
               ]}
               spec={`${SPEC}/docs/concepts/tools`}
               specLabel="concepts · tools"
@@ -181,23 +173,11 @@ export default function Guide() {
               side="server"
               title="Resources"
               methods={["resources/list", "resources/read", "resources/subscribe"]}
-              def={
-                <>
-                  Content with a URI the host can read into context: a file, a
-                  table, a log.
-                </>
-              }
               facts={[
-                <>
-                  <b>chosen by</b> the host or the person, not the model
-                </>,
-                <>
-                  <b>no side effects</b>, by definition; reading is always safe
-                </>,
-                <>
-                  subscriptions push <code>updated</code>; the host re-reads
-                </>,
-                <>text or binary; URI templates for parameterized reads</>,
+                { k: "is", v: <>content behind a URI: a file, a table, a log</> },
+                { k: "chosen by", v: <>the host or the person, never the model</> },
+                { k: "effects", v: <>none, by definition; reading is always safe</> },
+                { k: "fresh", v: <>subscribe → <code>updated</code> → read again</> },
               ]}
               spec={`${SPEC}/docs/concepts/resources`}
               specLabel="concepts · resources"
@@ -210,18 +190,11 @@ export default function Guide() {
               side="server"
               title="Prompts"
               methods={["prompts/list", "prompts/get"]}
-              def={
-                <>
-                  A named template the server fills into ready-to-send
-                  messages.
-                </>
-              }
               facts={[
-                <>
-                  <b>invoked by</b> the person; slash-command material
-                </>,
-                <>takes arguments; returns messages, not prose</>,
-                <>the model picks tools, it does not pick prompts</>,
+                { k: "is", v: <>a named template the server fills into ready messages</> },
+                { k: "invoked by", v: <>the person; slash-command material</> },
+                { k: "returns", v: <>messages with roles, not prose</> },
+                { k: "note", v: <>the model picks tools, never prompts</> },
               ]}
               spec={`${SPEC}/docs/concepts/prompts`}
               specLabel="concepts · prompts"
@@ -231,25 +204,22 @@ export default function Guide() {
           </div>
 
           <div className="gcol">
-            <h2 className="gcol-h" id="g-host-side">
+            <h2 className="gcol-h" id="g-agent-side">
               <i data-g="host" aria-hidden="true" />
-              the host offers back
-              <span>the symmetric half</span>
+              the agent
+              <span>the host that runs them</span>
             </h2>
 
             <GCard
               id="g-sampling"
-              side="host"
+              side="agent"
               title="Sampling"
               methods={["sampling/createMessage"]}
-              def={<>The server asks the host to run the model on its behalf.</>}
               facts={[
-                <>
-                  <b>the server never sees</b> a key, the model choice, or your
-                  other context
-                </>,
-                <>the host may edit, refuse, or put it in front of you</>,
-                <>one request in, one completion back</>,
+                { k: "is", v: <>the server borrowing the model, through the host</> },
+                { k: "hidden", v: <>keys, model choice, your other context</> },
+                { k: "host may", v: <>edit, refuse, or put it in front of you</> },
+                { k: "shape", v: <>one request in, one completion back</> },
               ]}
               spec={`${SPEC}/docs/concepts/sampling`}
               specLabel="concepts · sampling"
@@ -259,22 +229,13 @@ export default function Guide() {
 
             <GCard
               id="g-elicitation"
-              side="host"
+              side="agent"
               title="Elicitation"
               methods={["elicitation/create"]}
-              def={
-                <>
-                  The server asks the person a question, through the host&apos;s
-                  UI.
-                </>
-              }
               facts={[
-                <>a schema describes what a valid answer looks like</>,
-                <>
-                  <b>the host renders it</b>; the server&apos;s screens never
-                  cross
-                </>,
-                <>declining is a valid, expected outcome</>,
+                { k: "is", v: <>the server asking the person a question</> },
+                { k: "rendered by", v: <>the host&apos;s UI; server screens never cross</> },
+                { k: "answer", v: <>schema-validated; declining is a valid outcome</> },
               ]}
               spec={`${SPEC}/docs/concepts/elicitation`}
               specLabel="concepts · elicitation"
@@ -284,19 +245,13 @@ export default function Guide() {
 
             <GCard
               id="g-roots"
-              side="host"
+              side="agent"
               title="Roots"
               methods={["roots/list", "…/list_changed"]}
-              def={<>The host tells the server where it is meant to operate.</>}
               facts={[
-                <>
-                  <b>scoping, not enforcement</b>; the locks stay with the
-                  files
-                </>,
-                <>change them any time; a notification announces it</>,
-                <>
-                  servers ask with <code>roots/list</code>
-                </>,
+                { k: "is", v: <>the host declaring where a server should operate</> },
+                { k: "power", v: <>scoping, not enforcement; locks stay with the files</> },
+                { k: "change", v: <>any time; a notification announces the new world</> },
               ]}
               spec={`${SPEC}/docs/concepts/roots`}
               specLabel="concepts · roots"
@@ -307,92 +262,90 @@ export default function Guide() {
         </div>
 
         {/* ------------------------------------------------------------- */}
-        <GWide id="g-progress" title="Progress and cancellation">
-          <p className="mchips">
-            <code>notifications/progress</code>
-            <code>notifications/cancelled</code>
-          </p>
-          <p>
-            Any request can carry a progress token; the other side streams
-            ticks against it. <code>cancelled</code> says stop caring. Both
-            are notifications: fire and forget, no reply.
-          </p>
-          <ProgressDemo />
-          <p className="specref">
-            <b>spec</b>
-            <a href={`${SPEC}/specification/2025-06-18/basic/utilities/progress`} target="_blank" rel="noreferrer noopener">
-              utilities · progress
-            </a>
-          </p>
-        </GWide>
-
-        {/* ------------------------------------------------------------- */}
-        <GWide id="g-transports" title="Transports">
-          <p className="mchips">
-            <code>stdio</code>
-            <code>Streamable HTTP</code>
-          </p>
-          <p>
-            <strong>stdio</strong> for a server the host spawns locally:
-            fast, private, no network. <strong>Streamable HTTP</strong> for a
-            server elsewhere: POSTs up, an optional event stream back down.
-            Same messages either way.
-          </p>
-          <p className="specref">
-            <b>spec</b>
-            <a href={`${SPEC}/docs/concepts/transports`} target="_blank" rel="noreferrer noopener">
-              concepts · transports
-            </a>
-          </p>
-        </GWide>
-
-        {/* ------------------------------------------------------------- */}
         <div className="gmeta2">
-          <GWide id="g-status" title="What is stable">
-            <ul className="gfacts">
-              <li>
-                everything above: <b>spec 2025-06-18</b>, current
-              </li>
-              <li>
-                <b>MCP Apps</b> (SEP-1865): draft; sandboxed UI, app-visible
-                tools
-              </li>
-              <li>
-                <b>Tasks</b> (SEP-2663): draft; durable handles for long work
-              </li>
-              <li>when the roadmap moves, this page gets edited</li>
-            </ul>
+          <GWide id="g-progress" title="Progress · cancellation">
+            <p className="mchips">
+              <code>notifications/progress</code>
+              <code>notifications/cancelled</code>
+            </p>
+            <GFacts
+              items={[
+                { k: "tick", v: <>progress streams against a request&apos;s token</> },
+                { k: "stop", v: <><code>cancelled</code> says stop caring; best effort</> },
+                { k: "nature", v: <>notifications, both directions; no reply ever</> },
+              ]}
+            />
+            <ProgressDemo />
+            <p className="specref">
+              <b>spec</b>
+              <a href={`${SPEC}/specification/2025-06-18/basic/utilities/progress`} target="_blank" rel="noreferrer noopener">
+                utilities · progress
+              </a>
+            </p>
           </GWide>
 
-          <GWide id="g-refs" title="References">
-            <ul className="reading">
-              <li>
-                <a href={`${SPEC}/specification/2025-06-18`} target="_blank" rel="noreferrer noopener">
-                  The specification
-                </a>
-                <span>the normative text</span>
-              </li>
-              <li>
-                <a href={`${SPEC}/docs/concepts/architecture`} target="_blank" rel="noreferrer noopener">
-                  Architecture overview
-                </a>
-                <span>host, client, server, officially drawn</span>
-              </li>
-              <li>
-                <Link href="/articles/who-can-talk-to-whom/">
-                  Who can talk to whom?
-                </Link>
-                <span>our essay on the boundaries underneath</span>
-              </li>
-              <li>
-                <a href={`${SPEC}/development/roadmap`} target="_blank" rel="noreferrer noopener">
-                  The roadmap
-                </a>
-                <span>what changes next</span>
-              </li>
-            </ul>
+          <GWide id="g-transports" title="Transports">
+            <p className="mchips">
+              <code>stdio</code>
+              <code>Streamable HTTP</code>
+            </p>
+            <GFacts
+              items={[
+                { k: "stdio", v: <>the host spawns the server locally; private, fast, no network</> },
+                { k: "http", v: <>remote; POSTs up, optional SSE stream back down</> },
+                { k: "same", v: <>identical JSON-RPC either way; sessions live at this layer</> },
+              ]}
+            />
+            <p className="specref">
+              <b>spec</b>
+              <a href={`${SPEC}/docs/concepts/transports`} target="_blank" rel="noreferrer noopener">
+                concepts · transports
+              </a>
+            </p>
+
+            <h2 className="gwide-sub" id="g-status">
+              What is stable
+            </h2>
+            <GFacts
+              items={[
+                { k: "stable", v: <>everything above · spec 2025-06-18</> },
+                { k: "draft", v: <>MCP Apps (SEP-1865): sandboxed UI, app-visible tools</> },
+                { k: "draft", v: <>Tasks (SEP-2663): durable handles for long work</> },
+                { k: "policy", v: <>when the roadmap moves, this page gets edited</> },
+              ]}
+            />
           </GWide>
         </div>
+
+        {/* ------------------------------------------------------------- */}
+        <GWide id="g-refs" title="References">
+          <ul className="reading">
+            <li>
+              <a href={`${SPEC}/specification/2025-06-18`} target="_blank" rel="noreferrer noopener">
+                The specification
+              </a>
+              <span>the normative text</span>
+            </li>
+            <li>
+              <a href={`${SPEC}/docs/concepts/architecture`} target="_blank" rel="noreferrer noopener">
+                Architecture overview
+              </a>
+              <span>host, client, server, officially drawn</span>
+            </li>
+            <li>
+              <Link href="/articles/who-can-talk-to-whom/">
+                Who can talk to whom?
+              </Link>
+              <span>our essay on the boundaries underneath</span>
+            </li>
+            <li>
+              <a href={`${SPEC}/development/roadmap`} target="_blank" rel="noreferrer noopener">
+                The roadmap
+              </a>
+              <span>what changes next</span>
+            </li>
+          </ul>
+        </GWide>
 
         <p className="post-end">fin · spec revisions welcome</p>
       </article>

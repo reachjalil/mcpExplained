@@ -1,21 +1,35 @@
 import type { ReactNode } from "react";
 
-export type Side = "server" | "host" | "both";
+export type Side = "server" | "agent" | "both";
 
 const SIDE_LABEL: Record<Side, string> = {
   server: "server",
-  host: "host",
+  agent: "agent",
   both: "both sides",
 };
 
-/** A compact reference card: name, side, methods, one-line definition,
- *  facts, a demo whose animation carries the concept, and the spec link. */
+export type Fact = { k: string; v: ReactNode };
+
+/** Keyed fact rows: the scannable core of every card. No paragraphs. */
+export function GFacts({ items }: { items: Fact[] }) {
+  return (
+    <ul className="gfacts">
+      {items.map((f, i) => (
+        <li key={`${f.k}-${i}`}>
+          <span className="k">{f.k}</span>
+          <span>{f.v}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A reference card: name, side, methods, keyed facts, demo, spec link. */
 export function GCard({
   id,
   side,
   title,
   methods,
-  def,
   facts,
   children,
   spec,
@@ -25,8 +39,7 @@ export function GCard({
   side: Side;
   title: string;
   methods: string[];
-  def: ReactNode;
-  facts: ReactNode[];
+  facts: Fact[];
   children: ReactNode;
   spec: string;
   specLabel: string;
@@ -36,21 +49,16 @@ export function GCard({
       <div className="gcard-head">
         <h3>{title}</h3>
         <span className="gside">
-          <i data-g={side} aria-hidden="true" />
+          <i data-g={side === "agent" ? "host" : side} aria-hidden="true" />
           {SIDE_LABEL[side]}
         </span>
       </div>
-      <p className="gdef">{def}</p>
       <p className="mchips">
         {methods.map((m) => (
           <code key={m}>{m}</code>
         ))}
       </p>
-      <ul className="gfacts">
-        {facts.map((f, i) => (
-          <li key={i}>{f}</li>
-        ))}
-      </ul>
+      <GFacts items={facts} />
       {children}
       <p className="specref">
         <b>spec</b>
@@ -62,7 +70,7 @@ export function GCard({
   );
 }
 
-/** Full-width section for the non-paired parts of the guide. */
+/** Full-width section for the parts that are not server/agent paired. */
 export function GWide({
   id,
   title,

@@ -182,6 +182,51 @@
   }
 }
 
+/* --- Legend: decode any figure at a glance ---------------------------------- */
+
+.gcast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.4rem;
+  margin: 1.2rem 0 0.6rem;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--muted);
+  max-width: 46rem;
+}
+
+.gcast span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.gcast i {
+  font-style: normal;
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.gcast .c-req {
+  background: var(--amber);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  width: 0.9rem;
+  height: 0.72rem;
+}
+
+.gcast .c-res {
+  background: var(--teal);
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  width: 0.95rem;
+  height: 0.72rem;
+}
+
 /* --- The two columns -------------------------------------------------------- */
 
 .gcols {
@@ -268,13 +313,6 @@
   height: 0.55rem;
 }
 
-.gdef {
-  margin: 0.5rem 0 0.6rem;
-  font-size: 1.02rem;
-  max-width: 46rem;
-  text-wrap: pretty;
-}
-
 .mchips {
   display: flex;
   flex-wrap: wrap;
@@ -294,31 +332,42 @@
 
 .gfacts {
   list-style: none;
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.6rem;
   padding: 0;
   max-width: 46rem;
 }
 
 .gfacts li {
-  position: relative;
-  padding: 0.22rem 0 0.22rem 1.1rem;
-  font-size: 0.92rem;
+  display: grid;
+  grid-template-columns: 6.6rem minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: baseline;
+  padding: 0.32rem 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--line) 60%, transparent);
+  font-size: 0.93rem;
   line-height: 1.5;
 }
 
-.gfacts li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.72em;
-  width: 0.45rem;
-  height: 0.45rem;
-  background: var(--amber);
-  border-radius: 1.5px;
+.gfacts li:last-child {
+  border-bottom: none;
+}
+
+.gfacts .k {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 0.2em;
 }
 
 .gfacts b {
   font-weight: 650;
+}
+
+.gfacts code {
+  font-size: 0.82em;
 }
 
 /* compact machines inside cards */
@@ -368,6 +417,15 @@
   font-weight: 700;
   font-size: 1.7rem;
   letter-spacing: -0.02em;
+}
+
+.gwide-sub {
+  margin: 2rem 0 0.4rem;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+  scroll-margin-top: 1.5rem;
 }
 
 /* status + references sit side by side on wide screens */

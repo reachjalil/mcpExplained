@@ -45,7 +45,7 @@ export const plannedArticles = () =>
 export const GUIDE = {
   href: "/guide/",
   title: "A guide to MCP",
-  deck: "Every concept on one page: tools, resources, prompts, sampling, elicitation, roots, progress. Each one is a small app you can run, with the spec reference beside it.",
+  deck: "Every concept, split the way the protocol is: server on one side, agent on the other. Methods, facts, spec links, and a runnable demo each.",
   updated: "August 25, 2026",
   figures: 8,
 };
