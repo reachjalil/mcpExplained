@@ -142,7 +142,7 @@ export function MentalModelScene() {
               </>
             ) : null}
 
-            <Fade show={showNew}>
+            <Fade show={showNew && !looping}>
               <Label x={600} y={430} emph>
                 the 2026 mental model
               </Label>
