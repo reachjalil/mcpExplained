@@ -226,6 +226,50 @@
   animation: bpop 380ms var(--ease-pop);
 }
 
+/* What the host wrote into the model's context. Opens like a rule and its
+   value pops when it changes. */
+.mnote {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 380ms var(--ease-move);
+  border-top: 0 solid var(--line);
+}
+
+.mnote[data-show="true"] {
+  grid-template-rows: 1fr;
+  border-top-width: 1px;
+  background: color-mix(in oklab, var(--teal) 4%, var(--plate));
+}
+
+.mnote-inner {
+  overflow: hidden;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  min-height: 0;
+  padding: 0 1.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+}
+
+.mnote[data-show="true"] .mnote-inner {
+  padding-block: 0.55rem 0.65rem;
+}
+
+.mnote-k {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.mnote-v {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--teal);
+  animation: bpop 380ms var(--ease-pop);
+}
+
 /* --- Actors ---------------------------------------------------------------- */
 
 .act {
@@ -855,6 +899,7 @@
 .bmap.in .brow:nth-child(4) { animation-delay: 820ms; }
 .bmap.in .brow:nth-child(5) { animation-delay: 1060ms; }
 .bmap.in .brow:nth-child(6) { animation-delay: 1300ms; }
+.bmap.in .brow:nth-child(7) { animation-delay: 1540ms; }
 
 @keyframes browIn {
   to {
@@ -892,6 +937,7 @@
 .bmap.in .brow:nth-child(4) .bres i { animation-delay: 1020ms; }
 .bmap.in .brow:nth-child(5) .bres i { animation-delay: 1260ms; }
 .bmap.in .brow:nth-child(6) .bres i { animation-delay: 1500ms; }
+.bmap.in .brow:nth-child(7) .bres i { animation-delay: 1740ms; }
 
 @keyframes bpop {
   from {
@@ -911,14 +957,14 @@
   top: 0;
 }
 
-.bmap.in .brow:nth-child(6) .flipA {
-  animation: bpop 380ms 1500ms var(--ease-pop) backwards,
-    flipout 300ms 2700ms forwards;
+.bmap.in .brow:nth-child(7) .flipA {
+  animation: bpop 380ms 1740ms var(--ease-pop) backwards,
+    flipout 300ms 2940ms forwards;
 }
 
-.bmap.in .brow:nth-child(6) .flipB {
+.bmap.in .brow:nth-child(7) .flipB {
   opacity: 0;
-  animation: bpop 420ms 2900ms var(--ease-pop) forwards;
+  animation: bpop 420ms 3140ms var(--ease-pop) forwards;
 }
 
 @keyframes flipout {
@@ -963,7 +1009,8 @@
   .bmap.in .bres i,
   .mrule[data-show="true"] .bres i,
   .shape-btn.is-hint,
-  .click-hint {
+  .click-hint,
+  .mnote-v {
     animation-duration: 1ms !important;
     animation-delay: 0ms !important;
   }

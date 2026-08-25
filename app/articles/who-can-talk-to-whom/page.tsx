@@ -200,6 +200,25 @@ export default function Article() {
         server a browser inside your session. Refuse, and the worst a
         malicious app can do is ask.
       </p>
+      <p>
+        The declared list holds more than proxy permissions, because a tool
+        picks its audience: the model, the app, or both. The seat map calls{" "}
+        <code>get_seat_availability</code> every time you hover a row; the
+        model never needs that tool, so it never sees it. The tool that
+        opened the seat map in the first place belongs to the model, and the
+        app can&apos;t call it. Same server, two audiences, one host
+        enforcing both lists.
+      </p>
+      <p>
+        Traffic also flows the other way, into the conversation. What you do
+        inside the app doesn&apos;t stay there. When the app&apos;s call
+        comes back, the host writes the result into the model&apos;s context;
+        that is the note under the machine above, and it changed before the
+        app&apos;s display did. Refresh again and watch the order. Without
+        that line the model would keep quoting a price you refreshed away
+        two clicks ago. It is the same context window from section 03, fed
+        from a second direction.
+      </p>
       <aside className="note">
         <span className="note-k">fine print</span>
         The app rules come from the MCP Apps draft (SEP-1865); everything else

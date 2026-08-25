@@ -4,11 +4,12 @@ const ROWS = [
   { pair: "server → server", r: "no", why: "strangers by design" },
   { pair: "app → server", r: "no", why: "sandboxed, no keys" },
   { pair: "server → model", r: "no", why: "sampling asks the agent first" },
+  { pair: "app → model", r: "no", why: "the host relays it into context" },
   { pair: "app → agent", r: "yes", why: "asking is allowed" },
   { pair: "agent → server", r: "yes", why: "it holds the connection" },
 ] as const;
 
-/** §7: the whole article as six rows that pop in on scroll. */
+/** §7: the whole article as seven rows that pop in on scroll. */
 export function BoundaryMap() {
   return (
     <InView as="figure" className="bmap" threshold={0.5}>
