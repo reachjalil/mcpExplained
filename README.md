@@ -1,26 +1,26 @@
 <p align="center">
-  <img src=".github/media/banner.svg" alt="mcpExplained — interactive, replayable explainers for the Model Context Protocol" width="720" />
+  <img src=".github/media/banner.svg" alt="mcpexplained — small, clickable explanations of the Model Context Protocol" width="720" />
 </p>
 
-# mcpExplained
+# mcpexplained
 
-**Interactive, replayable explainers for the Model Context Protocol.**
+**Small, clickable explanations of the Model Context Protocol.**
 
-Protocols are easier to understand when you can press play. Every idea that
-involves something moving — a call, a handle, a task, an event — gets a
-diagram you can step through, pause, scrub, and replay. No animation
-libraries: hand-written SVG driven by a tiny step machine, with full
-keyboard control and reduced-motion support.
+Short, content-driven essays where the diagrams are little machines you can
+click. You send the requests, you flip the permissions, you approve the
+payments — and the checklists tick off as you go. No animation libraries,
+no videos: solid typography on paper, and animation only where it earns
+the surprise.
 
 **Live site:** https://reachjalil.github.io/mcpExplained/
 
-## Articles
+## Essays
 
-| # | Article | Status |
-|---|---------|--------|
-| 01 | [Agent-Mediated Composition](https://reachjalil.github.io/mcpExplained/articles/agent-mediated-composition/) — how sessionless MCP, multi round-trip requests, Tasks, and events turn MCP into composable workflow primitives, with the agent as the composer. 16 interactive figures, including a live composition playground. | Live |
-| 02 | Progressive Discovery | Planned |
-| 03 | MCP Apps, Explained | Planned |
+| # | Essay | Status |
+|---|-------|--------|
+| 01 | [Who can talk to whom?](https://reachjalil.github.io/mcpExplained/articles/who-can-talk-to-whom/) — MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding all the keys. Five machines. | Live |
+| 02 | Sessions are gone. Now what? | Planned |
+| 03 | The task that outlived the request | Planned |
 
 ## Running locally
 
@@ -30,50 +30,51 @@ npm run dev        # http://localhost:3000
 npm run check      # typecheck + lint + production build
 ```
 
-Requires Node 20.9+. The site is fully static (`output: "export"`), so
-`npm run build` produces a deployable `out/` directory.
+Requires Node 20.9+. Fully static (`output: "export"`) — `npm run build`
+produces a deployable `out/`.
 
-## How the figures work
+## How a machine works
 
-Three layers, all in this repo:
+Three small pieces, all plain React + CSS + the Web Animations API:
 
-1. **The step machine** — [`components/scene/useScene.ts`](components/scene/useScene.ts).
-   A scene is an array of steps (`id`, narration, hold time). The hook owns
-   play/pause/scrub state, keyboard bindings (`space`, `←`, `→`, `r`),
-   pauses off-screen via IntersectionObserver, autoplays on first reveal,
-   and exposes a `runKey` that changes on every transition so one-shot CSS
-   animations restart on replay.
+1. **The stage** — [`components/machine/stage.ts`](components/machine/stage.ts).
+   Actors register DOM nodes by name; `fly()` moves a dot between actor
+   centres and resolves when it lands, so choreography reads as async code:
 
-2. **The player shell** — [`components/scene/Scene.tsx`](components/scene/Scene.tsx).
-   Every diagram shares the same chrome: figure number, stage, per-step
-   narration, transport controls, step pips. Scenes never own their own
-   buttons; they only draw the current step.
+   ```ts
+   await fly({ from: "app", to: "agent" });
+   chip("agent", "app-visible ✓", "res");
+   await fly({ from: "agent", to: "server" });
+   ```
 
-3. **The SVG vocabulary** — [`components/scene/svg.tsx`](components/scene/svg.tsx)
-   plus [`geometry.ts`](components/scene/geometry.ts). Nodes, wires with
-   travelling comets (`pathLength="100"` so the dash maths never measures
-   real geometry), chips, zones, fades. Colour is semantic and constant
-   across the whole site: the agent is violet, servers are teal, humans
-   amber, tasks green, events pink.
+   `deny()` is the same but the dot hits a boundary: an ✕ pops and the dot
+   falls. `pulse()` and `chip()` cover acknowledgement and speech.
 
-Beyond scenes there are self-contained interactive widgets (state machines
-you can drive, payload inspectors, races, a composition playground) in
-[`components/widgets/`](components/widgets/).
+2. **The card** — [`components/machine/Machine.tsx`](components/machine/Machine.tsx).
+   White card, hard offset shadow, a stage, an optional controls row.
+   Actors drop in with a small stagger the first time it scrolls into view.
 
-Want to build one? Read [CONTRIBUTING.md](CONTRIBUTING.md) — it walks
-through a scene from scratch.
+3. **Goals** — [`components/machine/Goals.tsx`](components/machine/Goals.tsx).
+   An encore-style checklist next to every machine. Toys report events;
+   boxes pop when you've earned them.
 
-## Design principles
+Each essay's toys live in [`components/toys/`](components/toys/) — one file
+per machine, nothing shared between essays except the kit above.
 
-- **Replayable, not looping.** Readers control time. Every figure can be
-  scrubbed backwards.
-- **Colour means something.** One palette, learned once, reused everywhere.
-- **Claims are tagged.** `spec today` / `roadmap` / `inference` badges keep
-  what is shipped separate from what is speculation.
-- **No animation dependency.** CSS transitions + a step machine cover
-  everything; `prefers-reduced-motion` collapses to instant transitions.
+## Design rules
+
+- **The reader does the work.** Every machine is driven by real clicks on
+  real controls; goals only complete when the reader completes them.
+- **One palette, learned once.** Amber dots are requests, teal dots are
+  results, black shapes are the machines' actors, red is a boundary saying
+  no.
+- **Animation is the reward, not the wallpaper.** Nothing moves until the
+  reader (or the scroll) asks for it; `prefers-reduced-motion` collapses
+  everything to near-instant.
+- **Claims stay small.** One concept per essay, fine print where a draft
+  spec is involved.
 
 ## License
 
-[MIT](LICENSE). The prose of the articles is © their authors, also under
-MIT — reuse with attribution.
+[MIT](LICENSE). Essay prose is © its authors, also MIT — reuse with
+attribution.

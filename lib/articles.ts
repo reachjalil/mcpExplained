@@ -1,46 +1,39 @@
 export type ArticleMeta = {
   slug: string;
   title: string;
-  standfirst: string;
+  deck: string;
   published: string;
   readingTime: string;
-  scenes: number;
-  tags: string[];
+  toys: number;
   status: "live" | "planned";
 };
 
 export const ARTICLES: ArticleMeta[] = [
   {
-    slug: "agent-mediated-composition",
-    title: "Agent-Mediated Composition",
-    standfirst:
-      "MCP is quietly turning into a set of composable workflow primitives. The agent — not the servers — becomes the thing that assembles them.",
-    published: "2026-08-25",
-    readingTime: "25 min",
-    scenes: 16,
-    tags: ["composition", "tasks", "sessionless", "mrtr"],
+    slug: "who-can-talk-to-whom",
+    title: "Who can talk to whom?",
+    deck: "MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding all the keys. Five little machines explain the boundaries.",
+    published: "August 25, 2026",
+    readingTime: "7 min",
+    toys: 5,
     status: "live",
   },
   {
-    slug: "progressive-discovery",
-    title: "Progressive Discovery",
-    standfirst:
-      "What happens to tool selection when a server exposes 400 tools, and why the catalogue has to arrive in pieces.",
+    slug: "sessions-are-gone",
+    title: "Sessions are gone. Now what?",
+    deck: "MCP deleted protocol sessions. A short tour of state handles — the little IDs that replaced them.",
     published: "",
     readingTime: "",
-    scenes: 0,
-    tags: ["discovery", "context"],
+    toys: 0,
     status: "planned",
   },
   {
-    slug: "mcp-apps",
-    title: "MCP Apps, Explained",
-    standfirst:
-      "Sandboxed UI inside a tool result: who is allowed to call what, and why the host sits in the middle of all of it.",
+    slug: "the-task-that-outlived-the-request",
+    title: "The task that outlived the request",
+    deck: "What happens when the work takes twenty minutes and the connection doesn't.",
     published: "",
     readingTime: "",
-    scenes: 0,
-    tags: ["apps", "ui", "host"],
+    toys: 0,
     status: "planned",
   },
 ];
@@ -48,7 +41,3 @@ export const ARTICLES: ArticleMeta[] = [
 export const liveArticles = () => ARTICLES.filter((a) => a.status === "live");
 export const plannedArticles = () =>
   ARTICLES.filter((a) => a.status === "planned");
-
-export function getArticle(slug: string): ArticleMeta | undefined {
-  return ARTICLES.find((a) => a.slug === slug);
-}

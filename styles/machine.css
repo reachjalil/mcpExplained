@@ -1,0 +1,765 @@
+/* ---------------------------------------------------------------------------
+   Machines: white cards with hard shadows, clickable shapes, flying dots
+--------------------------------------------------------------------------- */
+
+/* --- Goals ----------------------------------------------------------------- */
+
+.goals {
+  margin: 1.8rem 0 1.1rem;
+  padding: 0.2rem 0 0.2rem 1.15rem;
+  border-left: 3px solid var(--amber);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.goals-title {
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.goal {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.02rem;
+}
+
+.gbox {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2.5px solid var(--ink);
+  border-radius: 5px;
+  background: var(--paper-2);
+  display: grid;
+  place-items: center;
+  transition: background 200ms, border-color 200ms;
+}
+
+.gbox svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  stroke: #fff;
+  stroke-width: 3.2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.goal[data-done="true"] .gbox {
+  background: var(--teal);
+  border-color: var(--teal);
+  animation: gpop 420ms var(--ease-pop);
+}
+
+@keyframes gpop {
+  40% {
+    transform: scale(1.25) rotate(-4deg);
+  }
+}
+
+.gcount {
+  flex: none;
+  min-width: 3.2rem;
+  padding: 0.06rem 0.5rem;
+  border-radius: 6px;
+  background: #a49f8f;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background 250ms;
+}
+
+.goal[data-done="true"] .gcount {
+  background: var(--ink);
+}
+
+.goal[data-done="true"] .glabel {
+  opacity: 0.55;
+}
+
+/* --- The machine card ------------------------------------------------------ */
+
+.machine {
+  margin: 1.6rem 0 2.4rem;
+  border: 2.5px solid var(--ink);
+  border-radius: 4px;
+  background: var(--card);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+
+.machine.iv {
+  transform: translateY(14px);
+}
+
+.machine.iv.in {
+  transform: none;
+}
+
+.mstage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2.2rem clamp(1.2rem, 5vw, 2.6rem);
+  min-height: 9.5rem;
+  overflow: hidden;
+}
+
+.mrow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.mcontrols {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem 1.4rem;
+  padding: 0.9rem 1.3rem;
+  border-top: 2.5px solid var(--ink);
+  background: var(--card);
+}
+
+.mcap {
+  padding: 0.55rem 1.3rem 0.7rem;
+  border-top: 2px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+/* --- Actors ---------------------------------------------------------------- */
+
+.act {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  transition: opacity 400ms;
+}
+
+.alabel {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.ashape {
+  display: grid;
+  place-items: center;
+  transition: transform 300ms var(--ease-pop), opacity 300ms;
+}
+
+.as-server {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 0.9rem;
+  background: var(--ink);
+}
+
+.as-agent {
+  width: 3.7rem;
+  height: 3.7rem;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 1.7rem;
+  line-height: 1;
+  padding-bottom: 0.2rem;
+}
+
+.act.pulse .ashape {
+  animation: apulse 460ms var(--ease-pop);
+}
+
+@keyframes apulse {
+  35% {
+    transform: scale(1.16);
+  }
+}
+
+.act.deny-shake .ashape {
+  animation: ashake 420ms;
+}
+
+@keyframes ashake {
+  20% { transform: translateX(-5px); }
+  45% { transform: translateX(5px); }
+  70% { transform: translateX(-3px); }
+}
+
+/* ghosted actor (removed from the story) */
+.act.ghost .ashape {
+  background: transparent;
+  outline: 3px dashed #b7b2a2;
+  outline-offset: -3px;
+  color: #b7b2a2;
+}
+
+.act.ghost .alabel {
+  opacity: 0.5;
+}
+
+/* actors drop in when the machine first scrolls into view */
+.machine.in .act {
+  animation: actIn 520ms var(--ease-pop) backwards;
+}
+
+.machine.in .act:nth-child(2) { animation-delay: 70ms; }
+.machine.in .act:nth-child(3) { animation-delay: 140ms; }
+.machine.in .act:nth-child(4) { animation-delay: 210ms; }
+
+@keyframes actIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+}
+
+/* --- The wall -------------------------------------------------------------- */
+
+.wall {
+  position: relative;
+  align-self: stretch;
+  margin-block: 0.6rem;
+  width: 0;
+  border-left: 3px dashed var(--ink);
+}
+
+.wall .wlabel {
+  position: absolute;
+  bottom: -0.4rem;
+  left: 50%;
+  translate: -50%;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--muted);
+  background: var(--card);
+  padding-inline: 0.3rem;
+  white-space: nowrap;
+}
+
+/* --- Flying dots ------------------------------------------------------------ */
+
+.fdot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 2px var(--card);
+  pointer-events: none;
+  z-index: 5;
+  will-change: transform;
+}
+
+.fdot-res {
+  background: var(--teal);
+}
+
+.fdot[data-tag]::after {
+  content: attr(data-tag);
+  position: absolute;
+  left: 1.3rem;
+  top: 50%;
+  translate: 0 -50%;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.05rem 0.45rem;
+  white-space: nowrap;
+}
+
+/* --- Transient effects ------------------------------------------------------ */
+
+.popx {
+  position: absolute;
+  z-index: 6;
+  translate: -50% -50%;
+  color: var(--red);
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.6rem;
+  line-height: 1;
+  pointer-events: none;
+  animation: xin 900ms var(--ease-pop) forwards;
+}
+
+@keyframes xin {
+  0% {
+    transform: scale(0.2) rotate(-14deg);
+    opacity: 0;
+  }
+  25% {
+    transform: scale(1.25) rotate(4deg);
+    opacity: 1;
+  }
+  45% {
+    transform: scale(1);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95) translateY(4px);
+    opacity: 0;
+  }
+}
+
+.mchip {
+  position: absolute;
+  z-index: 7;
+  translate: -50% -50%;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.16rem 0.6rem;
+  box-shadow: 3px 3px 0 var(--ink);
+  pointer-events: none;
+  animation: chipin 1700ms var(--ease-move) forwards;
+}
+
+.mchip[data-tone="res"] { color: var(--teal); }
+.mchip[data-tone="deny"] { color: var(--red); }
+
+@keyframes chipin {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.85);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  82% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* --- Controls: the amber button --------------------------------------------- */
+
+.shape-btn {
+  position: relative;
+  flex: none;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--amber);
+  box-shadow: 4px 4px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 120ms, box-shadow 120ms;
+}
+
+.shape-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.shape-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.shape-btn .cursor {
+  position: absolute;
+  right: -0.85rem;
+  bottom: -0.8rem;
+  width: 1.5rem;
+  pointer-events: none;
+}
+
+.click-hint {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  animation: hintblink 1.6s ease-in-out infinite;
+}
+
+@keyframes hintblink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* --- Controls: rectangular buttons ------------------------------------------ */
+
+.rect-btn {
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  background: var(--card);
+  border: 2.5px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 110ms, box-shadow 110ms, background 150ms;
+}
+
+.rect-btn:hover:not(:disabled) {
+  background: var(--paper);
+}
+
+.rect-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.rect-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.rect-btn[data-tone="amber"] {
+  background: var(--amber);
+}
+
+.rect-btn[data-tone="red"] {
+  background: var(--card);
+  color: var(--red);
+}
+
+/* --- Toggle ------------------------------------------------------------------ */
+
+.mtoggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mtoggle input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.tswitch {
+  width: 2.7rem;
+  height: 1.5rem;
+  border: 2.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper-2);
+  position: relative;
+  transition: background 200ms;
+  flex: none;
+}
+
+.tswitch::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.14rem;
+  translate: 0 -50%;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: left 220ms var(--ease-pop);
+}
+
+.mtoggle input:checked + .tswitch {
+  background: var(--amber);
+}
+
+.mtoggle input:checked + .tswitch::after {
+  left: calc(100% - 1.1rem);
+}
+
+.mtoggle input:focus-visible + .tswitch {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* --- The app window ---------------------------------------------------------- */
+
+.appwin {
+  width: 10rem;
+  border: 2.5px solid var(--ink);
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: 4px 4px 0 var(--ink);
+  overflow: hidden;
+}
+
+.appwin-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.5rem;
+  background: var(--ink);
+}
+
+.appwin-bar i {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--paper);
+  opacity: 0.5;
+}
+
+.appwin-bar i:first-child {
+  background: var(--amber);
+  opacity: 1;
+}
+
+.appwin-bar span {
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--paper);
+  opacity: 0.7;
+}
+
+.appwin-body {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.7rem 0.7rem 0.8rem;
+  justify-items: start;
+}
+
+.appwin .price {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  transition: color 200ms;
+}
+
+.appwin .price.bump {
+  animation: pricebump 500ms var(--ease-pop);
+  color: var(--teal);
+}
+
+@keyframes pricebump {
+  40% {
+    transform: scale(1.18);
+  }
+}
+
+.appwin .mini-btn {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.28rem 0.6rem;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 5px;
+  box-shadow: 2px 2px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 100ms, box-shadow 100ms;
+}
+
+.appwin .mini-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.appwin .app-err {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 600;
+  color: var(--red);
+  min-height: 0.9rem;
+}
+
+/* --- Approval drawer ---------------------------------------------------------- */
+
+.drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 380ms var(--ease-move);
+  border-top: 0 solid var(--ink);
+}
+
+.drawer[data-open="true"] {
+  grid-template-rows: 1fr;
+  border-top-width: 2.5px;
+}
+
+.drawer > div {
+  overflow: hidden;
+}
+
+.drawer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.2rem;
+  padding: 0.95rem 1.3rem;
+  background: #fff8e6;
+}
+
+.drawer-inner .dq {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.drawer-inner .dbtns {
+  display: flex;
+  gap: 0.55rem;
+  margin-inline-start: auto;
+}
+
+/* --- Boundary map -------------------------------------------------------------- */
+
+.bmap {
+  margin: 1.8rem 0 2.2rem;
+  border: 2.5px solid var(--ink);
+  border-radius: 4px;
+  background: var(--card);
+  box-shadow: 8px 8px 0 var(--ink);
+  overflow: hidden;
+}
+
+.brow {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.8rem 1.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  border-bottom: 2px solid var(--line);
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.brow:last-child {
+  border-bottom: none;
+}
+
+.bmap.in .brow {
+  animation: browIn 480ms var(--ease-move) forwards;
+}
+
+.bmap.in .brow:nth-child(1) { animation-delay: 100ms; }
+.bmap.in .brow:nth-child(2) { animation-delay: 340ms; }
+.bmap.in .brow:nth-child(3) { animation-delay: 580ms; }
+.bmap.in .brow:nth-child(4) { animation-delay: 820ms; }
+.bmap.in .brow:nth-child(5) { animation-delay: 1060ms; }
+
+@keyframes browIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.brow .bpair {
+  font-weight: 600;
+  min-width: 11.5rem;
+}
+
+.brow .bres {
+  font-weight: 700;
+  font-size: 1.05rem;
+  position: relative;
+  width: 1.2rem;
+}
+
+.bres[data-r="yes"] { color: var(--teal); }
+.bres[data-r="no"] { color: var(--red); }
+
+.bmap.in .bres i {
+  font-style: normal;
+  display: inline-block;
+  animation: bpop 380ms var(--ease-pop) backwards;
+}
+
+.bmap.in .brow:nth-child(1) .bres i { animation-delay: 300ms; }
+.bmap.in .brow:nth-child(2) .bres i { animation-delay: 540ms; }
+.bmap.in .brow:nth-child(3) .bres i { animation-delay: 780ms; }
+.bmap.in .brow:nth-child(4) .bres i { animation-delay: 1020ms; }
+.bmap.in .brow:nth-child(5) .bres i { animation-delay: 1260ms; }
+
+@keyframes bpop {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.35);
+  }
+}
+
+/* the last row's verdict flips after a beat: ✕ … then ✓ once you approve */
+.bres .flipA,
+.bres .flipB {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.bmap.in .brow:nth-child(5) .flipA {
+  animation: bpop 380ms 1260ms var(--ease-pop) backwards,
+    flipout 300ms 2400ms forwards;
+}
+
+.bmap.in .brow:nth-child(5) .flipB {
+  opacity: 0;
+  animation: bpop 420ms 2600ms var(--ease-pop) forwards;
+}
+
+@keyframes flipout {
+  to {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+.brow .bwhy {
+  margin-inline-start: auto;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: end;
+}
+
+@media (max-width: 40rem) {
+  .brow .bwhy {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .machine.in .act,
+  .bmap.in .brow,
+  .bmap.in .bres i,
+  .click-hint {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+}

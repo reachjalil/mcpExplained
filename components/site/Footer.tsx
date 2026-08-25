@@ -3,21 +3,12 @@ import { REPO_URL } from "@/lib/site";
 export function Footer() {
   return (
     <footer className="site-footer">
+      <span>mcpexplained — open source, MIT. no trackers, no cookies.</span>
       <span>
-        mcpExplained — open source, MIT licensed. Diagrams are hand-built SVG;
-        no animation library.
-      </span>
-      <nav>
         <a href={REPO_URL} target="_blank" rel="noreferrer noopener">
-          Source
+          source
         </a>
-        <a
-          href={`${REPO_URL}/blob/main/CONTRIBUTING.md`}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          Contribute an explainer
-        </a>
+        {" · "}
         <a
           href="https://modelcontextprotocol.io"
           target="_blank"
@@ -25,7 +16,7 @@ export function Footer() {
         >
           modelcontextprotocol.io
         </a>
-      </nav>
+      </span>
     </footer>
   );
 }
