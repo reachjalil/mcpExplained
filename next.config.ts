@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 /**
  * `NEXT_PUBLIC_BASE_PATH` lets the same build serve from a GitHub Pages
- * project subpath (`/mcpExplained`) or from a domain root (Vercel, Netlify).
+ * project subpath (`/mcpexplained`) or from a domain root (Vercel, Netlify).
  */
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 

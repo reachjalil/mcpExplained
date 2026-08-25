@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_BASE_PATH: /mcpExplained
+      NEXT_PUBLIC_BASE_PATH: /mcpexplained
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

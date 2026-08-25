@@ -224,7 +224,7 @@ export default function Article() {
         The app rules come from the MCP Apps draft (SEP-1865); everything else
         on this page is core MCP. Drafts move. If this paragraph goes stale,{" "}
         <a
-          href="https://github.com/reachjalil/mcpExplained/issues"
+          href="https://github.com/reachjalil/mcpexplained/issues"
           target="_blank"
           rel="noreferrer noopener"
         >

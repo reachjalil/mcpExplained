@@ -4,10 +4,10 @@
   "private": false,
   "license": "MIT",
   "description": "Interactive, replayable explainers for the Model Context Protocol.",
-  "homepage": "https://github.com/reachjalil/mcpExplained",
+  "homepage": "https://github.com/reachjalil/mcpexplained",
   "repository": {
     "type": "git",
-    "url": "https://github.com/reachjalil/mcpExplained.git"
+    "url": "https://github.com/reachjalil/mcpexplained.git"
   },
   "scripts": {
     "dev": "next dev",

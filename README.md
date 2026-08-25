@@ -12,13 +12,13 @@ payments — and the checklists tick off as you go. No animation libraries,
 no videos: solid typography on paper, and animation only where it earns
 the surprise.
 
-**Live site:** https://reachjalil.github.io/mcpExplained/
+**Live site:** https://reachjalil.github.io/mcpexplained/
 
 ## Essays
 
 | # | Essay | Status |
 |---|-------|--------|
-| 01 | [Who can talk to whom?](https://reachjalil.github.io/mcpExplained/articles/who-can-talk-to-whom/) — MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding all the keys. Five machines. | Live |
+| 01 | [Who can talk to whom?](https://reachjalil.github.io/mcpexplained/articles/who-can-talk-to-whom/) — MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding all the keys. Five machines. | Live |
 | 02 | Sessions are gone. Now what? | Planned |
 | 03 | The task that outlived the request | Planned |
 
