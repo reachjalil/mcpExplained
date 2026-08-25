@@ -1,0 +1,343 @@
+/* ---------------------------------------------------------------------------
+   The guide: reference-document layout. Same paper, denser bones — a sticky
+   rail, a host/server split, method chips, and spec references per section.
+--------------------------------------------------------------------------- */
+
+.guide {
+  max-width: 76rem;
+  margin-inline: auto;
+  padding: 0 1.25rem;
+}
+
+@media (min-width: 68rem) {
+  .guide {
+    display: grid;
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+    gap: 3rem;
+    align-items: start;
+  }
+}
+
+.gpost {
+  max-width: var(--measure);
+  margin-inline: auto;
+  min-width: 0;
+}
+
+/* --- Rail ------------------------------------------------------------------ */
+
+.gtoc {
+  display: none;
+}
+
+@media (min-width: 68rem) {
+  .gtoc {
+    display: block;
+    position: sticky;
+    top: 1.6rem;
+    padding: 1.4rem 0 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+}
+
+.gtoc-k {
+  margin: 1.1rem 0 0.35rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.gtoc-k:first-child {
+  margin-top: 0;
+}
+
+.gtoc-k i {
+  font-style: normal;
+  width: 0.6rem;
+  height: 0.6rem;
+  flex: none;
+}
+
+.gtoc-k i[data-g="server"] {
+  background: var(--ink);
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.gtoc-k i[data-g="host"] {
+  border: 2.5px solid var(--ink);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.gtoc a {
+  display: block;
+  padding: 0.22rem 0 0.22rem 0.75rem;
+  border-left: 2px solid var(--line);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.gtoc a:hover {
+  background: none;
+  color: var(--ink);
+  border-left-color: var(--amber);
+}
+
+/* --- Header ---------------------------------------------------------------- */
+
+.gheader {
+  padding: clamp(1.5rem, 5vw, 3.5rem) 0 1rem;
+}
+
+.gheader .gkicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--ink);
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+}
+
+.gheader .gkicker i {
+  font-style: normal;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--amber);
+}
+
+.gheader h1 {
+  margin-top: 1rem;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* --- The two-sided index (the container/items homage) ---------------------- */
+
+.gindex {
+  margin: 2rem 0 1rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 44rem) {
+  .gindex {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.gindex-col {
+  border: 2px solid var(--ink);
+  border-radius: var(--card-radius);
+  background: var(--card);
+  padding: 1rem 1.15rem 1.1rem;
+}
+
+.gindex-col > strong {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.gindex-col > strong i {
+  font-style: normal;
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: none;
+}
+
+.gindex-col > strong i[data-g="server"] {
+  background: var(--ink);
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.gindex-col > strong i[data-g="host"] {
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.gindex-col p {
+  margin: 0.35rem 0 0.6rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.gindex-col a {
+  display: inline-block;
+  margin: 0.15rem 0.35rem 0.15rem 0;
+  padding: 0.22rem 0.6rem;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-decoration: none;
+  transition: border-color 140ms, background 140ms;
+}
+
+.gindex-col a:hover {
+  background: var(--amber);
+  border-color: var(--ink);
+}
+
+/* --- Sections --------------------------------------------------------------- */
+
+.gside {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 3.2rem 0 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.gside i {
+  font-style: normal;
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
+.gside i[data-g="server"] {
+  background: var(--ink);
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.gside i[data-g="host"] {
+  border: 2.5px solid var(--ink);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.gside i[data-g="both"] {
+  background: var(--amber);
+  border-radius: 2px;
+}
+
+.gpost .gside + h2 {
+  margin-top: 0.1rem;
+}
+
+.mchips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.6rem 0 1rem;
+}
+
+.mchips code {
+  padding: 0.18rem 0.55rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: var(--card);
+  box-shadow: 2px 2px 0 var(--ink);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.specref {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.8rem;
+  margin: 1.1rem 0 0.4rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.specref b {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* --- Progress bar (utilities demo) ------------------------------------------ */
+
+.pbar {
+  flex: 1 1 8rem;
+  height: 0.7rem;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--card);
+  overflow: hidden;
+  align-self: center;
+}
+
+.pbar i {
+  display: block;
+  height: 100%;
+  width: calc(var(--p, 0) * 100%);
+  background: var(--amber);
+  transition: width 320ms var(--ease-move);
+}
+
+.pbar[data-state="cancelled"] i {
+  background: var(--red);
+}
+
+.pbar[data-state="done"] i {
+  background: var(--teal);
+}
+
+/* --- Choice buttons inside an elicitation drawer ----------------------------- */
+
+.gchoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Jump pills stand in for the rail below the breakpoint. */
+.gjump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1.4rem 0 0.4rem;
+}
+
+.gjump a {
+  padding: 0.24rem 0.65rem;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  text-decoration: none;
+  color: var(--muted);
+}
+
+.gjump a:hover {
+  background: var(--amber);
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+@media (min-width: 68rem) {
+  .gjump {
+    display: none;
+  }
+}

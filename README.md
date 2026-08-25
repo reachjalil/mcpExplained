@@ -13,6 +13,7 @@ no videos: solid typography on paper, and animation only where it earns
 the surprise.
 
 **Live site:** https://reachjalil.github.io/mcpexplained/
+**The reference:** [A guide to MCP](https://reachjalil.github.io/mcpexplained/guide/) · every concept as a small runnable app, css-tricks-flexbox style
 
 ## Essays
 

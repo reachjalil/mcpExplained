@@ -41,3 +41,11 @@ export const ARTICLES: ArticleMeta[] = [
 export const liveArticles = () => ARTICLES.filter((a) => a.status === "live");
 export const plannedArticles = () =>
   ARTICLES.filter((a) => a.status === "planned");
+
+export const GUIDE = {
+  href: "/guide/",
+  title: "A guide to MCP",
+  deck: "Every concept on one page: tools, resources, prompts, sampling, elicitation, roots, progress. Each one is a small app you can run, with the spec reference beside it.",
+  updated: "August 25, 2026",
+  figures: 8,
+};

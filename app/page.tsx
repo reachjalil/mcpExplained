@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { HelloToy } from "@/components/toys/HelloToy";
 import { InView } from "@/components/ui/InView";
-import { liveArticles, plannedArticles } from "@/lib/articles";
+import { GUIDE, liveArticles, plannedArticles } from "@/lib/articles";
 
 export default function Home() {
   return (
@@ -14,6 +14,27 @@ export default function Home() {
       </p>
 
       <HelloToy />
+
+      <p className="index-head">The reference</p>
+      <ul className="index">
+        <li>
+          <InView as="div" className="iv">
+            <Link href={GUIDE.href}>
+              <h2>
+                {GUIDE.title}
+                <span className="arrow" aria-hidden="true">
+                  →
+                </span>
+              </h2>
+              <p>{GUIDE.deck}</p>
+              <div className="meta">
+                {GUIDE.figures} interactive figures · kept current · updated{" "}
+                {GUIDE.updated}
+              </div>
+            </Link>
+          </InView>
+        </li>
+      </ul>
 
       <p className="index-head">Essays</p>
       <ul className="index">

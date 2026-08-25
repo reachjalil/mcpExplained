@@ -8,6 +8,7 @@ export function Header() {
         mcpexplained<i aria-hidden="true" />
       </Link>
       <nav>
+        <Link href="/guide/">guide</Link>
         <a href={REPO_URL} target="_blank" rel="noreferrer noopener">
           github
         </a>
