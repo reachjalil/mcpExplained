@@ -43,6 +43,7 @@ export function AppAsks() {
       // The host records the result before the app ever sees it.
       setSeen(next);
       await fly({ from: "agent", to: "app", kind: "res", duration: 520 });
+      pulse("app");
       setPrice(next);
       setBump((b) => b + 1);
       hit("refresh");
@@ -51,6 +52,7 @@ export function AppAsks() {
       chip("agent", "app-visible ✕", "deny");
       pulse("agent", "deny-shake");
       await deny({ from: "agent", to: "app", until: 0.999, duration: 480 });
+      pulse("app", "deny-shake");
       window.clearTimeout(errTimer.current);
       setErr(true);
       errTimer.current = window.setTimeout(() => setErr(false), 1600);

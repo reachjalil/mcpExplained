@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useStage } from "@/components/machine/stage";
 import { Machine, Actor, Wall, Rule } from "@/components/machine/Machine";
 import { Goals, type GoalState } from "@/components/machine/Goals";
@@ -12,12 +12,21 @@ export function ServerWall() {
   const { stageRef, actor, deny, pulse } = useStage();
   const [goals, setGoals] = useState<GoalState>({});
   const [busy, setBusy] = useState(false);
+  const [wallHit, setWallHit] = useState(false);
+  const wallTimer = useRef(0);
 
   const attempt = async () => {
     if (busy) return;
     setBusy(true);
     pulse("flights");
-    await deny({ from: "flights", to: "calendar", until: 0.52 });
+    const impact = deny({ from: "flights", to: "calendar", until: 0.52 });
+    // flash the wall the moment the packet reaches it
+    window.setTimeout(() => {
+      setWallHit(true);
+      window.clearTimeout(wallTimer.current);
+      wallTimer.current = window.setTimeout(() => setWallHit(false), 460);
+    }, 330);
+    await impact;
     setGoals((s) => ({
       ...s,
       blocked: (s.blocked ?? 0) + 1,
@@ -64,7 +73,7 @@ export function ServerWall() {
         }
       >
         <Actor refCb={actor("flights")} kind="server" name="flights" />
-        <Wall label="no wire" />
+        <Wall label="no wire" hit={wallHit} />
         <Actor refCb={actor("calendar")} kind="server" name="calendar" />
       </Machine>
     </>

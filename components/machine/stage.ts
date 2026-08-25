@@ -4,8 +4,8 @@ import { useCallback, useRef } from "react";
 
 type Pt = { x: number; y: number };
 
-const pose = (x: number, y: number, ang: number, s = 1) =>
-  `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${ang}deg) scale(${s})`;
+const pose = (x: number, y: number, ang: number, sx = 1, sy = sx) =>
+  `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${ang}deg) scale(${sx}, ${sy})`;
 
 function spawnPacket(kind: "req" | "res" = "req") {
   const el = document.createElement("span");
@@ -89,23 +89,36 @@ export function useStage() {
       }
       stage.appendChild(packet);
 
+      // A hand-thrown feel: the packet lifts into a shallow arc and smears
+      // along its direction of travel at peak speed.
+      const dist = Math.hypot(end.x - a.x, end.y - a.y);
+      const lift = Math.min(24, dist * 0.11);
+      const mid = { x: (a.x + end.x) / 2, y: (a.y + end.y) / 2 - lift };
+
       const dur = reduced() ? 60 : duration * until;
       const anim = packet.animate(
         [
           { transform: pose(a.x, a.y, ang, 0.3), opacity: 0 },
-          { transform: pose(a.x, a.y, ang, 1), opacity: 1, offset: 0.15 },
+          { transform: pose(a.x, a.y, ang, 1.08), opacity: 1, offset: 0.14 },
+          {
+            transform: pose(mid.x, mid.y, ang, 1.3, 0.8),
+            opacity: 1,
+            offset: 0.52,
+          },
           { transform: pose(end.x, end.y, ang, 1), opacity: 1 },
         ],
         { duration: dur, easing: "cubic-bezier(.35,.75,.25,1)", fill: "forwards" },
       );
       await anim.finished.catch(() => {});
 
+      // Squash on impact, then absorb.
       const out = packet.animate(
         [
           { transform: pose(end.x, end.y, ang, 1), opacity: 1 },
-          { transform: pose(end.x, end.y, ang, 0.4), opacity: 0 },
+          { transform: pose(end.x, end.y, ang, 1.25, 0.7), opacity: 1, offset: 0.4 },
+          { transform: pose(end.x, end.y, ang, 0.3), opacity: 0 },
         ],
-        { duration: reduced() ? 40 : 200, easing: "ease-in", fill: "forwards" },
+        { duration: reduced() ? 40 : 230, easing: "ease-in", fill: "forwards" },
       );
       await out.finished.catch(() => {});
       packet.remove();
@@ -132,11 +145,25 @@ export function useStage() {
         [
           { transform: pose(a.x, a.y, ang, 0.3), opacity: 0 },
           { transform: pose(a.x, a.y, ang, 1), opacity: 1, offset: 0.15 },
+          { transform: pose((a.x + end.x) / 2, (a.y + end.y) / 2, ang, 1.24, 0.84), opacity: 1, offset: 0.55 },
           { transform: pose(end.x, end.y, ang, 1), opacity: 1 },
         ],
         { duration: slow ? 60 : duration * until, easing: "cubic-bezier(.4,.6,.5,1)", fill: "forwards" },
       );
       await anim.finished.catch(() => {});
+
+      // The refusal is felt, not just shown: the board judders.
+      if (!slow) {
+        stage.animate(
+          [
+            { transform: "translateX(0)" },
+            { transform: "translateX(-3px)", offset: 0.3 },
+            { transform: "translateX(2px)", offset: 0.6 },
+            { transform: "translateX(0)" },
+          ],
+          { duration: 230, easing: "ease-out" },
+        );
+      }
 
       const x = document.createElement("span");
       x.className = "popx";
@@ -168,7 +195,8 @@ export function useStage() {
     [centerOf],
   );
 
-  /** Quick scale pulse on an actor (processing / acknowledging). */
+  /** Quick scale pulse on an actor (processing / acknowledging), with a
+   *  sonar ring spreading from its centre. */
   const pulse = useCallback((name: string, cls: "pulse" | "deny-shake" = "pulse") => {
     const el = actors.current.get(name);
     if (!el) return;
@@ -178,6 +206,20 @@ export function useStage() {
     void (host as HTMLElement).offsetWidth;
     host.classList.add(cls);
     window.setTimeout(() => host.classList.remove(cls), 600);
+
+    const stage = stageRef.current;
+    if (!stage || cls !== "pulse" || reduced()) return;
+    const s = stage.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    const size = Math.max(r.width, r.height) + 16;
+    const ring = document.createElement("span");
+    ring.className = "ping";
+    ring.style.left = `${r.left + r.width / 2 - s.left}px`;
+    ring.style.top = `${r.top + r.height / 2 - s.top}px`;
+    ring.style.width = `${size}px`;
+    ring.style.height = `${size}px`;
+    stage.appendChild(ring);
+    window.setTimeout(() => ring.remove(), 640);
   }, []);
 
   /** Transient mono chip above an actor. Portaled to the body so the board

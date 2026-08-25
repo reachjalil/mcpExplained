@@ -81,9 +81,9 @@ export function Actor({
   );
 }
 
-export function Wall({ label }: { label?: string }) {
+export function Wall({ label, hit = false }: { label?: string; hit?: boolean }) {
   return (
-    <div className="wall" aria-hidden="true">
+    <div className={hit ? "wall hit" : "wall"} aria-hidden="true">
       {label ? <span className="wlabel">{label}</span> : null}
     </div>
   );

@@ -54,6 +54,18 @@
   animation: gpop 420ms var(--ease-pop);
 }
 
+.goal[data-done="true"] .gbox svg path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: gdraw 260ms 120ms ease-out forwards;
+}
+
+@keyframes gdraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @keyframes gpop {
   40% {
     transform: scale(1.25) rotate(-4deg);
@@ -244,8 +256,9 @@
 .mnote-inner {
   overflow: hidden;
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 1rem;
+  gap: 0.15rem 1rem;
   min-height: 0;
   padding: 0 1.3rem;
   font-family: var(--font-mono);
@@ -333,13 +346,24 @@
   animation: apulse 460ms var(--ease-pop);
 }
 
+.act.pulse .appwin {
+  animation: awpulse 460ms var(--ease-pop);
+}
+
+@keyframes awpulse {
+  35% {
+    transform: scale(1.045) rotate(-0.4deg);
+  }
+}
+
 @keyframes apulse {
   35% {
     transform: scale(1.16);
   }
 }
 
-.act.deny-shake .ashape {
+.act.deny-shake .ashape,
+.act.deny-shake .appwin {
   animation: ashake 420ms;
 }
 
@@ -382,8 +406,14 @@
 
 /* --- The wall -------------------------------------------------------------- */
 
+.wall.hit {
+  border-color: var(--red);
+  transition: border-color 60ms;
+}
+
 .wall {
   position: relative;
+  transition: border-color 500ms;
   align-self: stretch;
   margin-block: 0.5rem;
   width: 0.7rem;
@@ -456,6 +486,29 @@
   white-space: nowrap;
 }
 
+/* Sonar ring the stage spawns when an actor acknowledges a packet. */
+.ping {
+  position: absolute;
+  z-index: 4;
+  translate: -50% -50%;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: pingOut 560ms var(--ease-move) forwards;
+}
+
+@keyframes pingOut {
+  0% {
+    opacity: 0.4;
+    scale: 0.55;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.3;
+  }
+}
+
 /* --- Transient effects ------------------------------------------------------ */
 
 .popx {
@@ -514,11 +567,14 @@
 @keyframes chipin {
   0% {
     opacity: 0;
-    transform: translateY(6px) scale(0.85);
+    transform: translateY(7px) rotate(-3deg) scale(0.85);
   }
   10% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0) rotate(0.6deg) scale(1);
+  }
+  16% {
+    transform: rotate(0deg);
   }
   82% {
     opacity: 1;
@@ -1004,14 +1060,35 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ping {
+    animation: none;
+    opacity: 0;
+  }
+
   .machine.in .act,
   .bmap.in .brow,
   .bmap.in .bres i,
   .mrule[data-show="true"] .bres i,
   .shape-btn.is-hint,
   .click-hint,
-  .mnote-v {
+  .mnote-v,
+  .goal[data-done="true"] .gbox svg path,
+  .act.pulse .appwin {
     animation-duration: 1ms !important;
     animation-delay: 0ms !important;
+  }
+}
+
+@media (pointer: coarse) {
+  .appwin .mini-btn {
+    padding: 0.42rem 0.75rem;
+  }
+
+  .rect-btn {
+    padding: 0.65rem 1.1rem;
+  }
+
+  .mtoggle {
+    padding-block: 0.6rem;
   }
 }
