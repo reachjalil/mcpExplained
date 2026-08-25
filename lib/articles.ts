@@ -14,7 +14,7 @@ export const ARTICLES: ArticleMeta[] = [
     title: "Who can talk to whom?",
     deck: "MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding the keys. Five machines let you click through the boundaries.",
     published: "August 25, 2026",
-    readingTime: "7 min",
+    readingTime: "10 min",
     toys: 5,
     status: "live",
   },

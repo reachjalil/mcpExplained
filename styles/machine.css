@@ -191,93 +191,6 @@
   color: var(--muted);
 }
 
-/* --- Article overture: fig. 00 -------------------------------------------- */
-
-.overture {
-  counter-increment: none;
-  margin-top: 2.1rem;
-}
-
-.overture .mplate::before {
-  content: "fig. 00  ·  ";
-}
-
-/* The middle slot is laid out from first paint and only turns visible, so
-   revealing the agent can never move the article underneath it. */
-.ov-mid {
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 420ms var(--ease-move);
-}
-
-.ov-mid.on {
-  visibility: visible;
-  opacity: 1;
-}
-
-.ov-mid.on .ashape {
-  animation: ovLand 560ms var(--ease-pop);
-}
-
-@keyframes ovLand {
-  from { transform: scale(0.35); }
-  62% { transform: scale(1.1); }
-}
-
-/* it arrives on click, not on scroll */
-.machine.in .ov-mid {
-  animation: none;
-}
-
-/* Two lines are reserved, so changing the copy never reflows the page. */
-.oprompt {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.7rem;
-  margin: 0;
-  padding: 0.75rem 1.2rem 0.85rem;
-  border-top: 1px solid var(--line);
-  font-family: var(--font-mono);
-  font-size: 0.86rem;
-  line-height: 1.45;
-  color: var(--ink);
-}
-
-/* Exactly two lines of copy are reserved, in font units so no viewport
-   rounds its way into a reflow. Every prompt string fits in two. */
-.oprompt > span {
-  display: block;
-  min-height: 2.9em;
-}
-
-.odot {
-  flex: none;
-  width: 0.42rem;
-  height: 0.42rem;
-  margin-top: 0.45em;
-  border-radius: 50%;
-  background: var(--print);
-  opacity: 0.5;
-  transition: background 300ms;
-}
-
-.overture[data-tone="ask"] .odot {
-  background: var(--amber);
-  opacity: 1;
-  animation: hintblink 1.6s ease-in-out infinite;
-}
-
-.overture[data-tone="blocked"] .odot {
-  background: var(--red);
-  opacity: 1;
-}
-
-.overture[data-tone="done"] .odot {
-  background: var(--teal);
-  opacity: 1;
-}
-
-
 /* A rule the reader earned by clicking — opens like the approval drawer. */
 .mrule {
   display: grid;
@@ -841,6 +754,46 @@
   margin-inline-start: auto;
 }
 
+/* --- On the wire: real traffic under a machine ------------------------------ */
+
+.wire {
+  margin: 1.6rem 0 2rem;
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+  background: color-mix(in oklab, var(--amber) 2%, var(--card));
+  overflow: hidden;
+}
+
+.wire figcaption {
+  padding: 0.5rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.wire pre {
+  margin: 0;
+  padding: 0.95rem 1.1rem 1.05rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.wire pre b {
+  font-weight: 600;
+  color: color-mix(in oklab, var(--amber) 62%, var(--ink));
+}
+
+.wire pre i {
+  font-style: normal;
+  color: var(--muted);
+}
+
 /* --- Boundary map -------------------------------------------------------------- */
 
 .bmap {
@@ -901,6 +854,7 @@
 .bmap.in .brow:nth-child(3) { animation-delay: 580ms; }
 .bmap.in .brow:nth-child(4) { animation-delay: 820ms; }
 .bmap.in .brow:nth-child(5) { animation-delay: 1060ms; }
+.bmap.in .brow:nth-child(6) { animation-delay: 1300ms; }
 
 @keyframes browIn {
   to {
@@ -937,6 +891,7 @@
 .bmap.in .brow:nth-child(3) .bres i { animation-delay: 780ms; }
 .bmap.in .brow:nth-child(4) .bres i { animation-delay: 1020ms; }
 .bmap.in .brow:nth-child(5) .bres i { animation-delay: 1260ms; }
+.bmap.in .brow:nth-child(6) .bres i { animation-delay: 1500ms; }
 
 @keyframes bpop {
   from {
@@ -956,14 +911,14 @@
   top: 0;
 }
 
-.bmap.in .brow:nth-child(5) .flipA {
-  animation: bpop 380ms 1260ms var(--ease-pop) backwards,
-    flipout 300ms 2400ms forwards;
+.bmap.in .brow:nth-child(6) .flipA {
+  animation: bpop 380ms 1500ms var(--ease-pop) backwards,
+    flipout 300ms 2700ms forwards;
 }
 
-.bmap.in .brow:nth-child(5) .flipB {
+.bmap.in .brow:nth-child(6) .flipB {
   opacity: 0;
-  animation: bpop 420ms 2600ms var(--ease-pop) forwards;
+  animation: bpop 420ms 2900ms var(--ease-pop) forwards;
 }
 
 @keyframes flipout {
@@ -1008,14 +963,8 @@
   .bmap.in .bres i,
   .mrule[data-show="true"] .bres i,
   .shape-btn.is-hint,
-  .click-hint,
-  .ov-mid.on .ashape,
-  .overture[data-tone="ask"] .odot {
+  .click-hint {
     animation-duration: 1ms !important;
     animation-delay: 0ms !important;
-  }
-
-  .ov-mid {
-    transition: none;
   }
 }

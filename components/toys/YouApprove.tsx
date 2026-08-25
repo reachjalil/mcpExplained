@@ -6,7 +6,7 @@ import { Machine, Actor, Rule } from "@/components/machine/Machine";
 import { Goals, type GoalState } from "@/components/machine/Goals";
 import { RectButton } from "@/components/machine/buttons";
 
-/** §5: the reader is the boundary. Approve or deny the side effect. */
+/** §6: the reader is the boundary. Approve or deny the side effect. */
 export function YouApprove() {
   const { stageRef, actor, fly, pulse, chip, wait } = useStage();
   const [goals, setGoals] = useState<GoalState>({});

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { InView } from "@/components/ui/InView";
 import { G } from "@/components/ui/Glyph";
-import { TalkOverture } from "@/components/toys/TalkOverture";
+import { WireBlock } from "@/components/ui/WireBlock";
 import { DirectCall } from "@/components/toys/DirectCall";
 import { ServerWall } from "@/components/toys/ServerWall";
 import { TwoHops } from "@/components/toys/TwoHops";
@@ -36,14 +36,22 @@ export default function Article() {
         </p>
         <div className="post-meta">
           <span>august 25, 2026</span>
-          <span>7 min</span>
+          <span>10 min</span>
           <span>5 machines</span>
           <span>you&apos;ll be doing the clicking</span>
         </div>
       </header>
 
-      <TalkOverture />
-
+      <p>
+        There are four characters in this story. You. An{" "}
+        <G k="agent">agent</G> working on your behalf; MCP&apos;s spec calls it
+        the host, and it is the only character that holds connections. Some{" "}
+        <G k="server">servers</G>, one per capability: weather, flights, a
+        calendar. And sometimes an <G k="app">app</G>, a scrap of UI a server
+        ships to your screen. A fifth thing hides inside the agent and never
+        touches the wire at all: the model. It only ever writes text. Keep
+        that one in mind.
+      </p>
       <p>
         Almost everything confusing about the protocol untangles once you
         track a single fact: <strong>who is allowed to talk to whom</strong>.
@@ -65,15 +73,46 @@ export default function Article() {
       <H2 n="01">One connection</H2>
       <p>
         Start with the only line that exists at the beginning: the{" "}
-        <G k="agent">agent</G> holds a connection to a <G k="server">server</G>. The
-        agent sends a <G k="request">request</G>; the server answers with a{" "}
-        <G k="result">result</G>. Nobody else is on the wire.
+        <G k="agent">agent</G> holds a connection to a <G k="server">server</G>.
+        The agent sends a <G k="request">request</G>; the server answers with
+        a <G k="result">result</G>. Nobody else is on the wire.
       </p>
       <DirectCall />
       <p>
-        That&apos;s the entire protocol: request out, result back. Everything
-        else in MCP is about what happens when this one line isn&apos;t
-        enough.
+        That&apos;s the entire protocol: request out, result back. The line
+        itself is ordinary JSON-RPC. The agent opens the session, asks{" "}
+        <code>tools/list</code> to learn what the server can do, then calls
+        tools by name. When the machine above ran, the traffic looked like
+        this:
+      </p>
+      <WireBlock label="on the wire · one round trip">
+        <b>→ agent to weather</b>{"\n"}
+        {`{
+  "jsonrpc": "2.0", "id": 7,
+  "method": "tools/call",
+  "params": {
+    "name": "get_forecast",
+    "arguments": { "city": "Lisbon" }
+  }
+}`}
+        {"\n\n"}
+        <b>← weather to agent</b>{"\n"}
+        {`{
+  "jsonrpc": "2.0", "id": 7,
+  "result": {
+    "content": [
+      { "type": "text", "text": "sunny · 22°" }
+    ]
+  }
+}`}
+      </WireBlock>
+      <p>
+        The spec&apos;s own vocabulary is a little stricter than mine. The
+        agent application is the <strong>host</strong>, and inside it runs one{" "}
+        <strong>client</strong> per server; a connection is always one client
+        talking to one server. Five servers means five clients, all in the
+        same host, none aware of each other. Everything else in MCP is about
+        what happens when this one line isn&apos;t enough.
       </p>
 
       {/* ----------------------------------------------------------------- */}
@@ -90,9 +129,18 @@ export default function Article() {
         Each server knows its own job and nothing else.
       </p>
       <p>
-        That sounds like a limitation. It&apos;s the design. A server that
-        can&apos;t reach other servers is a server nobody has to distrust on
-        the others&apos; behalf.
+        The reason is not tidiness. A server is code you trusted with one
+        job, written by someone you have never met. If flights could reach
+        the calendar, then whoever compromises flights inherits your calendar
+        too, and a poisoned tool description becomes a burglary kit.
+        MCP&apos;s answer is topology instead of vigilance: the call fails
+        because the wire does not exist, and no amount of clever prompting
+        invents a wire.
+      </p>
+      <p>
+        It also kills a quieter tax. Five servers that could all call each
+        other would be ten integrations somebody maintains. Five servers that
+        can&apos;t is five.
       </p>
 
       {/* ----------------------------------------------------------------- */}
@@ -109,6 +157,22 @@ export default function Article() {
         no path from one server to the other. The workflow doesn&apos;t live
         in the servers and isn&apos;t wired between them.{" "}
         <strong>It exists only in the middle.</strong>
+      </p>
+      <p>
+        Here is what the machine hides: who decided to make the second call?
+        The model did. The host handed it your goal and the flight result,
+        the model wrote &quot;add 14:05 to the calendar&quot; as text, and the
+        host turned that text into a real call. The result goes back into the
+        model&apos;s context, the model reads it, and decides what happens
+        next. That loop is the entire trick behind the word{" "}
+        <strong>agentic</strong>.
+      </p>
+      <p>
+        The loop has a price. Every fact that crosses between servers rides
+        through the model&apos;s context window, so the middle is not free: a
+        two-line arrival time travels well, a forty-megabyte spreadsheet does
+        not. The protocol&apos;s newer answer, passing IDs around instead of
+        payloads, gets its own essay later.
       </p>
 
       {/* ----------------------------------------------------------------- */}
@@ -127,6 +191,15 @@ export default function Article() {
         wants and the host enforces that list. Same app, same server, same
         button. The only thing that changed is what the middle allows.
       </p>
+      <p>
+        Mechanically the sandbox is boring, which is the point. The app is an
+        iframe with no network. Its clicks become messages to the host, the
+        host checks the tool against the declared list, and only then does a
+        real client make a real call. The app never holds a token, a URL, or
+        a connection. Give it <code>fetch</code> and you have handed the
+        server a browser inside your session. Refuse, and the worst a
+        malicious app can do is ask.
+      </p>
       <aside className="note">
         <span className="note-k">fine print</span>
         The app rules come from the MCP Apps draft (SEP-1865); everything else
@@ -142,7 +215,30 @@ export default function Article() {
       </aside>
 
       {/* ----------------------------------------------------------------- */}
-      <H2 n="05">You are a boundary too</H2>
+      <H2 n="05">The wire runs both ways</H2>
+      <p>
+        So far every request started on the left. The protocol is more
+        symmetric than that, and this is the part most explainers skip. A
+        server can ask the agent to run the model for it; the spec calls this{" "}
+        <strong>sampling</strong>. Summarize this diff. Pick the likelier
+        duplicate. The server never sees the model and never holds an API
+        key. It files a request, and the host decides whether the model
+        answers and what the server gets back.
+      </p>
+      <p>
+        A server can also ask <strong>you</strong> a question; the spec calls
+        that <strong>elicitation</strong>. Which of these three flights did
+        you mean? The question arrives on the same wire its results do and
+        lands in the agent&apos;s UI, not in some popup the server owns.
+      </p>
+      <p>
+        Both features would be alarming as direct lines. As hops through the
+        middle they are just more traffic, subject to the same veto as
+        everything else.
+      </p>
+
+      {/* ----------------------------------------------------------------- */}
+      <H2 n="06">You are a boundary too</H2>
       <p>
         One connection is missing from every machine so far: the one to your
         money. When a side effect matters, the agent doesn&apos;t get to
@@ -155,10 +251,16 @@ export default function Article() {
         crossed the line, because waiting for you is a first-class state, not
         a failure.
       </p>
+      <p>
+        Approval is not a courtesy dialog bolted on top. It is the same
+        mechanism as every other boundary in this article: a hop the agent
+        refuses to make until someone with authority says yes. The authority
+        happens to be you.
+      </p>
 
       {/* ----------------------------------------------------------------- */}
-      <H2 n="06">The map</H2>
-      <p>Each machine writes a rule. Here they are together.</p>
+      <H2 n="07">The map</H2>
+      <p>Each section above wrote a rule. Here they are together.</p>
       <BoundaryMap />
       <p>
         Memorize the table and you&apos;ve memorized the architecture. One
@@ -167,7 +269,22 @@ export default function Article() {
       </p>
 
       {/* ----------------------------------------------------------------- */}
-      <H2 n="07">Keep reading</H2>
+      <H2 n="08">What this costs</H2>
+      <p>
+        Fairness requires the other column. A single mandatory middle is a
+        bottleneck: every byte pays the toll, every hop adds latency, and the
+        agent sees everything, which makes it the one component you must
+        trust completely. Centralizing access also centralizes failure; when
+        the host is down, all of it is down.
+      </p>
+      <p>
+        MCP takes that trade with open eyes. One place to log, one place to
+        revoke, one place to say no. Distributed trust sounds nicer until you
+        try to audit it.
+      </p>
+
+      {/* ----------------------------------------------------------------- */}
+      <H2 n="09">Keep reading</H2>
       <ul className="reading">
         <li>
           <a
@@ -178,6 +295,16 @@ export default function Article() {
             The MCP specification
           </a>
           <span>where every rule above actually lives</span>
+        </li>
+        <li>
+          <a
+            href="https://modelcontextprotocol.io/docs/concepts/sampling"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Sampling
+          </a>
+          <span>the server-asks-the-model flow from section 05</span>
         </li>
         <li>
           <a
