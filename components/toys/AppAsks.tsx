@@ -7,7 +7,7 @@ import { Goals, type GoalState } from "@/components/machine/Goals";
 import { Toggle } from "@/components/machine/buttons";
 import { G } from "@/components/ui/Glyph";
 
-/** §4 — the app has no connection of its own. It asks the agent. */
+/** §4: the app has no connection of its own. It asks the agent. */
 export function AppAsks() {
   const { stageRef, actor, fly, deny, pulse, chip, wait } = useStage();
   const [goals, setGoals] = useState<GoalState>({});
@@ -85,7 +85,7 @@ export function AppAsks() {
             why="asks the agent instead"
           />
         }
-        caption="the button lives inside the app — but the request still goes the long way round"
+        caption="the button lives inside the app. the request still goes the long way round"
       >
         <div className="act">
           <div className="appwin" ref={actor("app") as React.Ref<HTMLDivElement>}>

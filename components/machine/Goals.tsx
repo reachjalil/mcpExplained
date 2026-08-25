@@ -35,7 +35,7 @@ export function Goals({ items, state }: { items: GoalDef[]; state: GoalState }) 
               </span>
             ) : null}
             <span className="glabel">{g.label}</span>
-            <span className="sr-only">{done ? " — done" : ""}</span>
+            <span className="sr-only">{done ? " (done)" : ""}</span>
           </div>
         );
       })}

@@ -91,7 +91,7 @@ export function Wall({ label }: { label?: string }) {
 
 /**
  * The takeaway a machine mints after you've seen it. Same row language as
- * the boundary map — click, watch, keep the rule.
+ * the boundary map: click, watch, keep the rule.
  */
 export function Rule({
   show,

@@ -6,7 +6,7 @@ import { Machine, Actor, Rule } from "@/components/machine/Machine";
 import { Goals, type GoalState } from "@/components/machine/Goals";
 import { RectButton } from "@/components/machine/buttons";
 
-/** §5 — the reader is the boundary: approve or deny the side effect. */
+/** §5: the reader is the boundary. Approve or deny the side effect. */
 export function YouApprove() {
   const { stageRef, actor, fly, pulse, chip, wait } = useStage();
   const [goals, setGoals] = useState<GoalState>({});
@@ -40,7 +40,7 @@ export function YouApprove() {
 
   const denyIt = async () => {
     setPending(false);
-    chip("agent", "cancelled — nothing crossed", "deny");
+    chip("agent", "cancelled, nothing crossed", "deny");
     pulse("agent", "deny-shake");
     hit("no");
   };
@@ -60,12 +60,12 @@ export function YouApprove() {
         controls={
           <>
             <RectButton onClick={start} disabled={busy || pending} tone="amber">
-              book the flight — $240
+              book the flight · $240
             </RectButton>
             <div className="drawer" data-open={pending} style={{ flexBasis: "100%" }}>
               <div>
                 <div className="drawer-inner">
-                  <span className="dq">agent wants to charge $240 — allow it?</span>
+                  <span className="dq">agent wants to charge $240. allow it?</span>
                   <span className="dbtns">
                     <RectButton onClick={approve}>approve</RectButton>
                     <RectButton onClick={denyIt} tone="red">

@@ -9,7 +9,7 @@ import { G } from "@/components/ui/Glyph";
 
 const ANSWERS = ["sunny · 22°", "cloudy · 17°", "rain · 14°", "clear · 19°"];
 
-/** §1 — the only line that exists at the beginning: agent ⇄ server. */
+/** §1: the only line that exists at the beginning, agent to server and back. */
 export function DirectCall() {
   const { stageRef, actor, fly, pulse, chip, wait } = useStage();
   const [goals, setGoals] = useState<GoalState>({});

@@ -3,7 +3,7 @@
 import { useEffect, useRef, type ReactNode, type RefObject } from "react";
 
 /**
- * Fig. 00 — the plate an article opens on: a stage, and one line of prompt
+ * Fig. 00, the plate an article opens on: a stage, and one line of prompt
  * whose copy changes as you act.
  *
  * Deliberately fixed height. Nothing expands, stamps in, or opens under the

@@ -7,7 +7,7 @@ const ROWS = [
   { pair: "agent → server", r: "yes", why: "it holds the connection" },
 ] as const;
 
-/** §6 — the whole article as five rows that pop in on scroll. */
+/** §6: the whole article as five rows that pop in on scroll. */
 export function BoundaryMap() {
   return (
     <InView as="figure" className="bmap" threshold={0.5}>

@@ -12,7 +12,7 @@ export const ARTICLES: ArticleMeta[] = [
   {
     slug: "who-can-talk-to-whom",
     title: "Who can talk to whom?",
-    deck: "MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding all the keys. Five little machines explain the boundaries.",
+    deck: "MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding the keys. Five machines let you click through the boundaries.",
     published: "August 25, 2026",
     readingTime: "7 min",
     toys: 5,
@@ -21,7 +21,7 @@ export const ARTICLES: ArticleMeta[] = [
   {
     slug: "sessions-are-gone",
     title: "Sessions are gone. Now what?",
-    deck: "MCP deleted protocol sessions. A short tour of state handles — the little IDs that replaced them.",
+    deck: "MCP deleted protocol sessions. A short tour of state handles, the small IDs that replaced them.",
     published: "",
     readingTime: "",
     toys: 0,

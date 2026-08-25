@@ -9,8 +9,8 @@ export default function Home() {
       <h1>Learn MCP by poking at it.</h1>
       <p className="home-sub">
         <strong>mcpexplained</strong> is a series of short, interactive essays
-        about the Model Context Protocol. No videos, no jargon walls — small
-        machines you can click, embedded in careful writing.
+        about the Model Context Protocol. No videos and no jargon walls. Small
+        machines you can click, sitting in short prose.
       </p>
 
       <HelloToy />

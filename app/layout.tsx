@@ -28,8 +28,8 @@ const plex = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — ${SITE_TAGLINE}`,
-    template: `%s — ${SITE_NAME}`,
+    default: `${SITE_NAME} · ${SITE_TAGLINE}`,
+    template: `%s · ${SITE_NAME}`,
   },
   description: SITE_TAGLINE,
   openGraph: {

@@ -7,7 +7,7 @@ import { Goals, type GoalState } from "@/components/machine/Goals";
 import { RectButton } from "@/components/machine/buttons";
 import { G } from "@/components/ui/Glyph";
 
-/** §2 — there is no wire between servers. Not a slow one. None. */
+/** §2: there is no wire between servers. Not a slow one. None. */
 export function ServerWall() {
   const { stageRef, actor, deny, pulse } = useStage();
   const [goals, setGoals] = useState<GoalState>({});

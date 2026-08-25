@@ -8,17 +8,20 @@ import { ShapeButton } from "@/components/machine/buttons";
 
 const LINES = [
   "Ask the weather server directly.",
-  "There's no line from you to a server.",
-  "It goes through the agent. Five machines below.",
+  "Blocked. No line runs from you to a server.",
+  "Delivered through the agent. Every request takes that path.",
 ];
 
 /**
  * Fig. 00 for "Who can talk to whom?".
  *
- * The reader does the obvious thing first — ask the server — and it fails.
- * The agent then fades into the gap the ✕ just marked: it was always the
- * only way across. One click, one motion, no cutscene. The middle slot is
- * laid out from first paint, so revealing the agent moves nothing.
+ * One click plays the whole argument. The reader asks the server directly
+ * and the request dies halfway. The agent fades into the gap the failure
+ * marked, and the same request retries the only way that works: through
+ * the middle, delivered. Clicking again replays the working path.
+ *
+ * The middle slot is laid out from first paint, so revealing the agent
+ * moves nothing on the page.
  */
 export function TalkOverture() {
   const { stageRef, actor, fly, deny, pulse, wait } = useStage();
@@ -26,13 +29,21 @@ export function TalkOverture() {
   const [revealed, setRevealed] = useState(false);
   const [busy, setBusy] = useState(false);
 
+  const viaAgent = async () => {
+    await fly({ from: "you", to: "agent", duration: 460 });
+    pulse("agent");
+    await wait(200);
+    await fly({ from: "agent", to: "weather", duration: 460 });
+    pulse("weather");
+  };
+
   const send = async () => {
     if (busy) return;
     setBusy(true);
 
     if (!revealed) {
-      // The ✕ pops at the midpoint; the packet falls; the gap it leaves is
-      // exactly where the agent belongs.
+      // The direct ask dies at the midpoint. The gap it leaves is exactly
+      // where the agent belongs.
       const blocked = deny({
         from: "you",
         to: "weather",
@@ -42,14 +53,14 @@ export function TalkOverture() {
       await wait(380);
       setStep(1);
       await blocked;
-      await wait(420);
+      await wait(360);
       setRevealed(true);
-      await wait(520);
+      await wait(500);
+      // Same request, retried the only way that works.
+      await viaAgent();
       setStep(2);
     } else {
-      // Afterwards the button still works: one hop, into the middle.
-      await fly({ from: "you", to: "agent", duration: 500 });
-      pulse("agent");
+      await viaAgent();
     }
 
     setBusy(false);

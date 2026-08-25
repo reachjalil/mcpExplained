@@ -12,7 +12,7 @@ import { BoundaryMap } from "@/components/toys/BoundaryMap";
 export const metadata: Metadata = {
   title: "Who can talk to whom?",
   description:
-    "MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding all the keys. Five little machines explain the boundaries.",
+    "MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding the keys. Five machines let you click through the boundaries.",
 };
 
 function H2({ n, children }: { n: string; children: string }) {
@@ -30,8 +30,9 @@ export default function Article() {
       <header className="post-header">
         <h1>Who can talk to whom?</h1>
         <p className="stand">
-          MCP looks complicated until you ask one question of it:{" "}
-          <strong>who holds access?</strong> Five little machines, one answer.
+          MCP looks complicated until you ask{" "}
+          <strong>who holds access</strong>. Five machines below answer it,
+          one boundary each.
         </p>
         <div className="post-meta">
           <span>august 25, 2026</span>
@@ -44,10 +45,10 @@ export default function Article() {
       <TalkOverture />
 
       <p>
-        Almost everything confusing about the protocol untangles if you track a
-        single thing: <strong>who is allowed to talk to whom</strong>. The
-        machines below are that question, one boundary at a time — and to show
-        you, I&apos;m going to need your help.
+        Almost everything confusing about the protocol untangles once you
+        track a single fact: <strong>who is allowed to talk to whom</strong>.
+        That fact is what the machines test. I&apos;ll need your help, because
+        none of them runs on its own.
       </p>
       <p className="owe">
         With a nod to{" "}
@@ -64,49 +65,49 @@ export default function Article() {
       <H2 n="01">One connection</H2>
       <p>
         Start with the only line that exists at the beginning: the{" "}
-        <G k="agent">agent</G> is connected to a <G k="server">server</G>. The
+        <G k="agent">agent</G> holds a connection to a <G k="server">server</G>. The
         agent sends a <G k="request">request</G>; the server answers with a{" "}
         <G k="result">result</G>. Nobody else is on the wire.
       </p>
       <DirectCall />
       <p>
-        That&apos;s the entire protocol in one breath: request out, result
-        back. Everything else in MCP is about what happens when this one line
-        isn&apos;t enough.
+        That&apos;s the entire protocol: request out, result back. Everything
+        else in MCP is about what happens when this one line isn&apos;t
+        enough.
       </p>
 
       {/* ----------------------------------------------------------------- */}
       <H2 n="02">Servers are strangers</H2>
       <p>
-        Add a second server and the temptation arrives: surely{" "}
-        <strong>flights</strong> should just tell the <strong>calendar</strong>{" "}
+        Add a second server and the shortcut is tempting. Surely{" "}
+        <strong>flights</strong> can just tell the <strong>calendar</strong>{" "}
         about your trip? Click and see.
       </p>
       <ServerWall />
       <p>
-        There is no wire between servers. Not a slow one, not a hidden one —
-        none. Flights cannot call the calendar, and it never learns the
-        calendar exists. Each server knows its own job and nothing else.
+        There is no wire between servers. Not a slow one, not a hidden one.
+        None. Flights cannot call the calendar and never learns it exists.
+        Each server knows its own job and nothing else.
       </p>
       <p>
         That sounds like a limitation. It&apos;s the design. A server that
-        can&apos;t reach other servers is a server nobody has to firewall,
-        audit, or distrust on behalf of the others.
+        can&apos;t reach other servers is a server nobody has to distrust on
+        the others&apos; behalf.
       </p>
 
       {/* ----------------------------------------------------------------- */}
       <H2 n="03">Facts travel through the middle</H2>
       <p>
         So how does the arrival time get to the calendar? It rides through the{" "}
-        <G k="agent">agent</G>. The agent asks flights, gets{" "}
-        <code>14:05</code> back, and — because it holds a connection to the
-        calendar too — hands it over.
+        <G k="agent">agent</G>. The agent asks flights and gets{" "}
+        <code>14:05</code> back. It holds the calendar connection too, so it
+        hands the time over.
       </p>
       <TwoHops />
       <p>
-        Try the toggle. With the agent gone, the fact is stranded: there is
-        simply no path from one server to the other. The workflow doesn&apos;t
-        live in the servers and it isn&apos;t wired between them.{" "}
+        Try the toggle. With the agent gone, the time is stranded. There is
+        no path from one server to the other. The workflow doesn&apos;t live
+        in the servers and isn&apos;t wired between them.{" "}
         <strong>It exists only in the middle.</strong>
       </p>
 
@@ -114,23 +115,22 @@ export default function Article() {
       <H2 n="04">Apps have to ask</H2>
       <p>
         Now the character this article was written for. A server can ship UI
-        to your screen — a seat map, a price ticker. That <G k="app">app</G>{" "}
+        to your screen: a seat map, a price ticker. That <G k="app">app</G>{" "}
         runs in a sandbox, and here is the part people miss:{" "}
         <strong>the app has no connection to its own server.</strong> It
         can&apos;t fetch. It can&apos;t call home. When it needs data, it asks
-        the agent — and the agent decides.
+        the agent, and the agent decides.
       </p>
       <AppAsks />
       <p>
         The permission you flipped is real. An app declares which tools it
-        wants to call, and the host enforces the list — the same click, the
-        same app, the same server, and the only thing that changed is what the
-        middle allows.
+        wants and the host enforces that list. Same app, same server, same
+        button. The only thing that changed is what the middle allows.
       </p>
       <aside className="note">
         <span className="note-k">fine print</span>
         The app rules come from the MCP Apps draft (SEP-1865); everything else
-        on this page is core MCP. Drafts move — if this paragraph goes stale,{" "}
+        on this page is core MCP. Drafts move. If this paragraph goes stale,{" "}
         <a
           href="https://github.com/reachjalil/mcpExplained/issues"
           target="_blank"
@@ -152,7 +152,7 @@ export default function Article() {
       <p>
         Deny it and notice what happened: <strong>nothing</strong>. No
         half-booked flight, no pending charge to unwind. The request never
-        crossed the line, because waiting for you is a first-class state — not
+        crossed the line, because waiting for you is a first-class state, not
         a failure.
       </p>
 
@@ -161,9 +161,9 @@ export default function Article() {
       <p>Each machine writes a rule. Here they are together.</p>
       <BoundaryMap />
       <p>
-        Memorize the table and you&apos;ve memorized the architecture: one
-        process holds the connections, and everyone else — servers, apps, even
-        the model — goes through it. <strong>Access is the architecture.</strong>
+        Memorize the table and you&apos;ve memorized the architecture. One
+        process holds the connections. Servers, apps, even the model all go
+        through it. <strong>That one rule is most of MCP.</strong>
       </p>
 
       {/* ----------------------------------------------------------------- */}
@@ -177,7 +177,7 @@ export default function Article() {
           >
             The MCP specification
           </a>
-          <span>the source of truth for everything the agent and servers do</span>
+          <span>where every rule above actually lives</span>
         </li>
         <li>
           <a
@@ -185,7 +185,7 @@ export default function Article() {
             target="_blank"
             rel="noreferrer noopener"
           >
-            SEP-1865 — MCP Apps
+            SEP-1865 · MCP Apps
           </a>
           <span>the sandbox, and which tools an app may request</span>
         </li>
@@ -201,7 +201,7 @@ export default function Article() {
         </li>
       </ul>
 
-      <p className="post-end">fin — thanks for clicking</p>
+      <p className="post-end">fin · thanks for clicking</p>
     </article>
   );
 }

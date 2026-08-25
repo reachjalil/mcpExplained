@@ -6,7 +6,7 @@ import { Machine, Actor, Rule } from "@/components/machine/Machine";
 import { Goals, type GoalState } from "@/components/machine/Goals";
 import { RectButton, Toggle } from "@/components/machine/buttons";
 
-/** §3 — facts travel through the middle. Remove the middle and they don't. */
+/** §3: facts travel through the middle. Remove the middle and they don't. */
 export function TwoHops() {
   const { stageRef, actor, fly, deny, pulse, chip, wait } = useStage();
   const [goals, setGoals] = useState<GoalState>({});
@@ -20,7 +20,7 @@ export function TwoHops() {
     if (busy) return;
     setBusy(true);
     if (removed) {
-      // No one holds a connection — the fact is stranded at the source.
+      // No one holds a connection, so the fact is stranded at the source.
       pulse("flights");
       await deny({ from: "flights", to: "agent", until: 0.86 });
       chip("agent", "no path", "deny");

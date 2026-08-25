@@ -25,7 +25,7 @@ export type FlyOpts = {
   /** small mono tag pinned to the dot, e.g. "14:05" */
   tag?: string;
   duration?: number;
-  /** stop at this fraction of the path — used for blocked calls */
+  /** stop at this fraction of the path (used for blocked calls) */
   until?: number;
 };
 
