@@ -1,0 +1,36 @@
+{
+  "name": "mcp-explained",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "description": "Interactive, replayable explainers for the Model Context Protocol.",
+  "homepage": "https://github.com/reachjalil/mcpExplained",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reachjalil/mcpExplained.git"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint && npm run build"
+  },
+  "dependencies": {
+    "next": "16.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.3",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}

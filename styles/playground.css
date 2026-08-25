@@ -1,0 +1,484 @@
+/* ---------------------------------------------------------------------------
+   The composer playground: build a plan, then watch the agent run it
+--------------------------------------------------------------------------- */
+
+.builder {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  overflow: hidden;
+  margin: 2.8rem 0;
+  box-shadow: 0 18px 44px -34px rgb(var(--shadow-color) / 0.55);
+}
+
+.builder-head {
+  padding: 1rem 1.15rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+}
+
+.builder-head h4 {
+  font-size: 0.98rem;
+  font-weight: 620;
+}
+
+.builder-head p {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  flex-basis: 100%;
+}
+
+.builder-grid {
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 52rem) {
+  .builder-grid {
+    grid-template-columns: 1.05fr 1fr;
+  }
+}
+
+.builder-col {
+  padding: 1rem 1.15rem 1.2rem;
+  min-width: 0;
+}
+
+.builder-col + .builder-col {
+  border-top: 1px solid var(--border);
+}
+
+@media (min-width: 52rem) {
+  .builder-col + .builder-col {
+    border-top: none;
+    border-inline-start: 1px solid var(--border);
+  }
+}
+
+.builder-col > h5 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.builder-col > h5 em {
+  font-style: normal;
+  color: var(--text-muted);
+  letter-spacing: 0;
+  text-transform: none;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+
+.server-group {
+  margin-bottom: 0.85rem;
+}
+
+.server-group-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.server-group-head i {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 2px;
+  background: var(--server);
+  font-style: normal;
+}
+
+.cap-list {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.cap {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 140ms var(--ease), transform 120ms var(--ease-out),
+    background 140ms var(--ease);
+}
+
+.cap:hover {
+  border-color: var(--server);
+  transform: translateX(2px);
+}
+
+.cap:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cap-plus {
+  width: 1.15rem;
+  height: 1.15rem;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--server);
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.cap-name {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.cap-name small {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+}
+
+.cap-flags {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.flag {
+  padding: 0.06rem 0.34rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.flag[data-kind="task"] { color: var(--task); }
+.flag[data-kind="approval"] { color: var(--human); }
+.flag[data-kind="needs"] { color: var(--text-faint); }
+
+.plan {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+  list-style: none;
+  padding: 0;
+}
+
+.plan:empty + .plan-empty {
+  display: block;
+}
+
+.plan-empty {
+  padding: 1.4rem 1rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 0.85rem;
+  margin-bottom: 0.9rem;
+}
+
+.plan-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.5rem 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--server);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+  margin: 0;
+  animation: chipIn 260ms var(--ease-out) both;
+}
+
+.plan-item[data-blocked="true"] {
+  border-inline-start-color: var(--danger);
+  background: color-mix(in oklab, var(--danger-soft) 45%, var(--panel-2));
+}
+
+.plan-num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  width: 1.1rem;
+}
+
+.plan-name {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.plan-name small {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  color: var(--danger);
+}
+
+.icon-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 0.8rem;
+  line-height: 1;
+  transition: color 140ms var(--ease), background 140ms var(--ease);
+}
+
+.icon-btn:hover:not(:disabled) {
+  color: var(--danger);
+  background: var(--panel);
+}
+
+.icon-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.builder-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.42rem 0.8rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 550;
+  cursor: pointer;
+  transition: color 140ms var(--ease), border-color 140ms var(--ease),
+    background 140ms var(--ease), transform 120ms var(--ease-out);
+}
+
+.btn:hover:not(:disabled) {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: currentColor;
+  flex: none;
+}
+
+.btn-primary {
+  background: var(--agent);
+  border-color: transparent;
+  color: var(--panel);
+  font-weight: 620;
+}
+
+:root[data-theme="dark"] .btn-primary,
+:root:not([data-theme="light"]) .btn-primary {
+  color: #0d0c11;
+}
+
+.btn-primary:hover:not(:disabled) {
+  color: var(--panel);
+  filter: brightness(1.08);
+}
+
+:root[data-theme="dark"] .btn-primary:hover:not(:disabled),
+:root:not([data-theme="light"]) .btn-primary:hover:not(:disabled) {
+  color: #0d0c11;
+}
+
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.8rem;
+}
+
+.preset {
+  padding: 0.24rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 140ms var(--ease);
+}
+
+.preset:hover {
+  border-color: var(--agent);
+  color: var(--agent);
+}
+
+/* --- Trace --------------------------------------------------------------- */
+
+.trace {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.9rem 1rem;
+  background: var(--bg-sunken);
+  min-height: 15rem;
+  max-height: 24rem;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  scroll-behavior: smooth;
+}
+
+.trace-row {
+  display: grid;
+  grid-template-columns: 4.6rem 1fr;
+  gap: 0.6rem;
+  align-items: start;
+  padding: 0.3rem 0.4rem;
+  border-radius: 6px;
+  border-inline-start: 2px solid var(--row-role, var(--border-strong));
+  background: var(--panel);
+  animation: traceIn 280ms var(--ease-out) both;
+}
+
+@keyframes traceIn {
+  from { opacity: 0; transform: translateX(-6px); }
+}
+
+.trace-row[data-current="true"] {
+  outline: 1px solid var(--row-role, var(--agent));
+  background: color-mix(in oklab, var(--row-role, var(--agent)) 8%, var(--panel));
+}
+
+.trace-row[data-role="agent"] { --row-role: var(--agent); }
+.trace-row[data-role="server"] { --row-role: var(--server); }
+.trace-row[data-role="human"] { --row-role: var(--human); }
+.trace-row[data-role="task"] { --row-role: var(--task); }
+.trace-row[data-role="event"] { --row-role: var(--event); }
+.trace-row[data-role="danger"] { --row-role: var(--danger); }
+
+.trace-actor {
+  color: var(--row-role, var(--text-faint));
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding-top: 0.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trace-msg {
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.trace-msg em {
+  font-style: normal;
+  color: var(--text-faint);
+}
+
+.trace-msg b {
+  font-weight: 600;
+  color: var(--row-role, var(--text));
+}
+
+.state-panel {
+  padding: 0.8rem 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  min-height: 3.4rem;
+}
+
+.state-panel > span {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-inline-end: 0.3rem;
+}
+
+.handle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--agent) 40%, var(--border));
+  background: color-mix(in oklab, var(--agent) 10%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text);
+  animation: chipIn 280ms var(--ease-out) both;
+}
+
+.handle b {
+  color: var(--agent);
+  font-weight: 600;
+}
+
+.handle[data-kind="task"] {
+  border-color: color-mix(in oklab, var(--task) 45%, var(--border));
+  background: color-mix(in oklab, var(--task) 10%, transparent);
+}
+
+.handle[data-kind="task"] b {
+  color: var(--task);
+}
+
+.handle-empty {
+  color: var(--text-faint);
+  font-size: 0.8rem;
+  font-style: italic;
+}

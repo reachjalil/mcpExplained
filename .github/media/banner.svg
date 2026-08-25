@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" role="img" aria-label="mcpExplained">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#12101a"/>
+      <stop offset="1" stop-color="#0d0c11"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="300" rx="18" fill="url(#bg)"/>
+  <g stroke="#2a2833" stroke-width="1.2" fill="none">
+    <path d="M 90 210 C 240 130, 380 140, 480 165"/>
+    <path d="M 480 165 C 600 195, 720 130, 860 100"/>
+    <path d="M 140 70 C 290 100, 400 130, 480 165"/>
+    <path d="M 480 165 C 560 230, 700 250, 850 225"/>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-width="2.5">
+    <path d="M 90 210 C 240 130, 380 140, 480 165" stroke="#a78bfa" stroke-dasharray="26 999" stroke-dashoffset="-120"/>
+    <path d="M 480 165 C 600 195, 720 130, 860 100" stroke="#34d3bd" stroke-dasharray="26 999" stroke-dashoffset="-150"/>
+    <path d="M 480 165 C 560 230, 700 250, 850 225" stroke="#f472b6" stroke-dasharray="26 999" stroke-dashoffset="-180"/>
+  </g>
+  <g>
+    <circle cx="90" cy="210" r="6" fill="#16151c" stroke="#34d3bd" stroke-width="2"/>
+    <circle cx="140" cy="70" r="6" fill="#16151c" stroke="#34d3bd" stroke-width="2"/>
+    <circle cx="860" cy="100" r="6" fill="#16151c" stroke="#34d3bd" stroke-width="2"/>
+    <circle cx="850" cy="225" r="6" fill="#16151c" stroke="#34d3bd" stroke-width="2"/>
+    <circle cx="480" cy="165" r="12" fill="#a78bfa"/>
+  </g>
+  <text x="80" y="120" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="44" font-weight="700">
+    <tspan fill="#a78bfa">mcp</tspan><tspan fill="#ece9f2">Explained</tspan>
+  </text>
+  <text x="80" y="156" font-family="ui-sans-serif, -apple-system, system-ui" font-size="17" fill="#a7a1b4">Interactive, replayable explainers for the Model Context Protocol</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">
+    <rect x="80" y="182" width="86" height="24" rx="12" fill="none" stroke="#3d3a4a"/>
+    <text x="123" y="198" text-anchor="middle" fill="#a7a1b4">▶ play</text>
+    <rect x="174" y="182" width="110" height="24" rx="12" fill="none" stroke="#3d3a4a"/>
+    <text x="229" y="198" text-anchor="middle" fill="#a7a1b4">← scrub →</text>
+    <rect x="292" y="182" width="96" height="24" rx="12" fill="none" stroke="#3d3a4a"/>
+    <text x="340" y="198" text-anchor="middle" fill="#a7a1b4">replay ↺</text>
+  </g>
+</svg>
