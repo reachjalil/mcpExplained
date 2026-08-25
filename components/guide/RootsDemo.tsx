@@ -21,14 +21,11 @@ export function RootsDemo() {
     });
   };
 
-  const visible = [projects ? "~/projects" : null, finance ? "~/finance" : null]
-    .filter(Boolean)
-    .join(" · ");
-
   return (
     <Machine
       stageRef={stageRef}
       label="The server's visible world"
+      minHeight={150}
       controls={
         <>
           <Toggle
@@ -51,20 +48,20 @@ export function RootsDemo() {
           </Toggle>
         </>
       }
-      rule={
-        <div className="mnote" data-show={true}>
-          <div className="mnote-inner">
-            <span className="mnote-k">server can see</span>
-            <span key={visible || "nothing"} className="mnote-v">
-              {visible || "nothing at all"}
-            </span>
-          </div>
-        </div>
-      }
-      caption="notifications/roots/list_changed goes out on every flip. the server adjusts; it was never asked for consent"
+      caption="every flip is a list_changed notification. the server was never asked for consent"
     >
       <Actor refCb={actor("agent")} kind="agent" name="host" />
-      <Actor refCb={actor("server")} kind="server" name="files" />
+      <div className="acol">
+        <Actor refCb={actor("server")} kind="server" name="files" />
+        <div className="cappills" aria-live="polite">
+          <span className="doccard" data-ghost={!projects}>
+            {projects ? "~/projects" : "~/projects ✕"}
+          </span>
+          <span className="doccard" data-ghost={!finance}>
+            {finance ? "~/finance" : "~/finance ✕"}
+          </span>
+        </div>
+      </div>
     </Machine>
   );
 }

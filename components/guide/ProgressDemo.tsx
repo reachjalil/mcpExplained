@@ -50,6 +50,7 @@ export function ProgressDemo() {
     <Machine
       stageRef={stageRef}
       label="Long work, kept honest"
+      minHeight={140}
       controls={
         <>
           <RectButton onClick={run} disabled={state === "running"} tone="amber">

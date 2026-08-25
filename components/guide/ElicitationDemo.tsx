@@ -35,6 +35,7 @@ export function ElicitationDemo() {
     <Machine
       stageRef={stageRef}
       label="A question travelling upstream"
+      minHeight={140}
       controls={
         <>
           <RectButton onClick={ask} disabled={busy || asking} tone="amber">
@@ -67,7 +68,7 @@ export function ElicitationDemo() {
           </div>
         </div>
       }
-      caption="the buttons you just used are the host's UI, not the server's. the server only ever sees the answer"
+      caption="those buttons are the host's UI. the server only ever sees the answer"
     >
       <Actor refCb={actor("agent")} kind="agent" name="host · your UI" />
       <Actor refCb={actor("server")} kind="server" name="flights" />

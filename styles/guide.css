@@ -1,10 +1,11 @@
 /* ---------------------------------------------------------------------------
-   The guide: reference-document layout. Same paper, denser bones — a sticky
-   rail, a host/server split, method chips, and spec references per section.
+   The guide: a reference, not an essay. Wide, two-columned, scannable.
+   Server-side and host-side concepts sit next to each other, each card a
+   definition, a fact list, a runnable demo, and a spec link.
 --------------------------------------------------------------------------- */
 
 .guide {
-  max-width: 76rem;
+  max-width: 82rem;
   margin-inline: auto;
   padding: 0 1.25rem;
 }
@@ -12,16 +13,21 @@
 @media (min-width: 68rem) {
   .guide {
     display: grid;
-    grid-template-columns: 13.5rem minmax(0, 1fr);
-    gap: 3rem;
+    grid-template-columns: 12.5rem minmax(0, 1fr);
+    gap: 2.6rem;
     align-items: start;
   }
 }
 
 .gpost {
-  max-width: var(--measure);
-  margin-inline: auto;
   min-width: 0;
+}
+
+/* prose lines stay readable even though the page is wide */
+.gpost > p,
+.gpost .stand,
+.gpost section > p {
+  max-width: 46rem;
 }
 
 /* --- Rail ------------------------------------------------------------------ */
@@ -57,22 +63,35 @@
   margin-top: 0;
 }
 
-.gtoc-k i {
+.gtoc-k i,
+.gside i,
+.gcol-h i {
   font-style: normal;
-  width: 0.6rem;
-  height: 0.6rem;
   flex: none;
 }
 
-.gtoc-k i[data-g="server"] {
+.gtoc-k i {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
+[data-g="server"] {
   background: var(--ink);
   clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
 }
 
-.gtoc-k i[data-g="host"] {
+[data-g="host"] {
   border: 2.5px solid var(--ink);
   border-radius: 50%;
   box-sizing: border-box;
+  background: transparent;
+  clip-path: none;
+}
+
+[data-g="both"] {
+  background: var(--amber);
+  border-radius: 2px;
+  clip-path: none;
 }
 
 .gtoc a {
@@ -92,7 +111,7 @@
 /* --- Header ---------------------------------------------------------------- */
 
 .gheader {
-  padding: clamp(1.5rem, 5vw, 3.5rem) 0 1rem;
+  padding: clamp(1.5rem, 4vw, 3rem) 0 0.6rem;
 }
 
 .gheader .gkicker {
@@ -122,197 +141,14 @@
   margin-top: 1rem;
   font-family: var(--font-head);
   font-weight: 700;
-  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-size: clamp(2.5rem, 7vw, 3.6rem);
   line-height: 1.02;
   letter-spacing: -0.03em;
   text-wrap: balance;
 }
 
-/* --- The two-sided index (the container/items homage) ---------------------- */
+/* --- Jump pills (always available; the fastest path to a concept) ---------- */
 
-.gindex {
-  margin: 2rem 0 1rem;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 44rem) {
-  .gindex {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.gindex-col {
-  border: 2px solid var(--ink);
-  border-radius: var(--card-radius);
-  background: var(--card);
-  padding: 1rem 1.15rem 1.1rem;
-}
-
-.gindex-col > strong {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-}
-
-.gindex-col > strong i {
-  font-style: normal;
-  width: 0.85rem;
-  height: 0.85rem;
-  flex: none;
-}
-
-.gindex-col > strong i[data-g="server"] {
-  background: var(--ink);
-  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
-}
-
-.gindex-col > strong i[data-g="host"] {
-  border: 3px solid var(--ink);
-  border-radius: 50%;
-  box-sizing: border-box;
-}
-
-.gindex-col p {
-  margin: 0.35rem 0 0.6rem;
-  font-size: 0.88rem;
-  color: var(--muted);
-}
-
-.gindex-col a {
-  display: inline-block;
-  margin: 0.15rem 0.35rem 0.15rem 0;
-  padding: 0.22rem 0.6rem;
-  border: 1.5px solid var(--line);
-  border-radius: 999px;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  text-decoration: none;
-  transition: border-color 140ms, background 140ms;
-}
-
-.gindex-col a:hover {
-  background: var(--amber);
-  border-color: var(--ink);
-}
-
-/* --- Sections --------------------------------------------------------------- */
-
-.gside {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin: 3.2rem 0 0.3rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.gside i {
-  font-style: normal;
-  width: 0.6rem;
-  height: 0.6rem;
-}
-
-.gside i[data-g="server"] {
-  background: var(--ink);
-  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
-}
-
-.gside i[data-g="host"] {
-  border: 2.5px solid var(--ink);
-  border-radius: 50%;
-  box-sizing: border-box;
-}
-
-.gside i[data-g="both"] {
-  background: var(--amber);
-  border-radius: 2px;
-}
-
-.gpost .gside + h2 {
-  margin-top: 0.1rem;
-}
-
-.mchips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0.6rem 0 1rem;
-}
-
-.mchips code {
-  padding: 0.18rem 0.55rem;
-  border: 1.5px solid var(--ink);
-  border-radius: 6px;
-  background: var(--card);
-  box-shadow: 2px 2px 0 var(--ink);
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
-.specref {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.3rem 0.8rem;
-  margin: 1.1rem 0 0.4rem;
-  padding-top: 0.55rem;
-  border-top: 1px solid var(--line);
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-
-.specref b {
-  font-weight: 700;
-  color: var(--ink);
-}
-
-/* --- Progress bar (utilities demo) ------------------------------------------ */
-
-.pbar {
-  flex: 1 1 8rem;
-  height: 0.7rem;
-  border: 2px solid var(--ink);
-  border-radius: 999px;
-  background: var(--card);
-  overflow: hidden;
-  align-self: center;
-}
-
-.pbar i {
-  display: block;
-  height: 100%;
-  width: calc(var(--p, 0) * 100%);
-  background: var(--amber);
-  transition: width 320ms var(--ease-move);
-}
-
-.pbar[data-state="cancelled"] i {
-  background: var(--red);
-}
-
-.pbar[data-state="done"] i {
-  background: var(--teal);
-}
-
-/* --- Choice buttons inside an elicitation drawer ----------------------------- */
-
-.gchoices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-/* Jump pills stand in for the rail below the breakpoint. */
 .gjump {
   display: flex;
   flex-wrap: wrap;
@@ -339,5 +175,403 @@
 @media (min-width: 68rem) {
   .gjump {
     display: none;
+  }
+}
+
+/* --- The two columns -------------------------------------------------------- */
+
+.gcols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 2.2rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 72rem) {
+  .gcols {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.gcol {
+  min-width: 0;
+}
+
+.gcol-h {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 2.2rem 0 0.4rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2.5px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.gcol-h i {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.gcol-h span {
+  margin-inline-start: auto;
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+/* --- Concept cards ----------------------------------------------------------- */
+
+.gcard {
+  padding: 1.5rem 0 0.6rem;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 1.5rem;
+}
+
+.gcard:last-child {
+  border-bottom: none;
+}
+
+.gcard-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.gcard-head h3 {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.45rem;
+  letter-spacing: -0.02em;
+}
+
+.gcard-head .gside {
+  margin: 0;
+}
+
+.gside {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.gside i {
+  width: 0.55rem;
+  height: 0.55rem;
+}
+
+.gdef {
+  margin: 0.5rem 0 0.6rem;
+  font-size: 1.02rem;
+  max-width: 46rem;
+  text-wrap: pretty;
+}
+
+.mchips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.5rem 0 0.8rem;
+}
+
+.mchips code {
+  padding: 0.16rem 0.5rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: var(--card);
+  box-shadow: 2px 2px 0 var(--ink);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.gfacts {
+  list-style: none;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  max-width: 46rem;
+}
+
+.gfacts li {
+  position: relative;
+  padding: 0.22rem 0 0.22rem 1.1rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.gfacts li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 0.45rem;
+  height: 0.45rem;
+  background: var(--amber);
+  border-radius: 1.5px;
+}
+
+.gfacts b {
+  font-weight: 650;
+}
+
+/* compact machines inside cards */
+.gcard .machine {
+  margin: 1rem 0 1.1rem;
+}
+
+.gcard .mstage {
+  padding: 1.5rem clamp(1rem, 3vw, 1.8rem);
+}
+
+.gcard .mcontrols {
+  padding: 0.7rem 1rem;
+}
+
+.specref {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.8rem;
+  margin: 0.4rem 0 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.specref b {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* --- Full-width sections ------------------------------------------------------ */
+
+.gwide {
+  scroll-margin-top: 1.5rem;
+}
+
+.gwide > h2 {
+  margin: 2.6rem 0 0.4rem;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.7rem;
+  letter-spacing: -0.02em;
+}
+
+/* status + references sit side by side on wide screens */
+.gmeta2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 2.2rem;
+}
+
+@media (min-width: 72rem) {
+  .gmeta2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* --- Demo artifacts: the per-concept visuals --------------------------------- */
+
+/* a column holding an actor plus what it owns */
+.acol {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+}
+
+/* capability pills stamped in by the handshake */
+.cappills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  max-width: 11rem;
+  min-height: 1.5rem;
+}
+
+.cappills span {
+  padding: 0.1rem 0.5rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  animation: chipin-lite 320ms var(--ease-pop) backwards;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes chipin-lite {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.8);
+  }
+}
+
+/* the tool shelf: what discovery returned */
+.shelf {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 9.5rem;
+  min-height: 3.4rem;
+}
+
+.shelf-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.28rem 0.6rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  animation: chipin-lite 320ms var(--ease-pop) backwards;
+  animation-delay: var(--d, 0ms);
+}
+
+.shelf-item i {
+  font-style: normal;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--line);
+  flex: none;
+  transition: background 200ms;
+}
+
+.shelf-item[data-on="true"] {
+  background: color-mix(in oklab, var(--amber) 18%, var(--card));
+}
+
+.shelf-item[data-on="true"] i {
+  background: var(--amber);
+}
+
+.shelf-empty {
+  padding: 0.5rem 0.6rem;
+  border: 1.5px dashed var(--line);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* a document with a version, and a copy that can go stale */
+.doccard {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.65rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  min-height: 1.9rem;
+}
+
+.doccard .v {
+  padding: 0 0.35rem;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.doccard.bump .v {
+  animation: pricebump 500ms var(--ease-pop);
+  background: var(--teal);
+}
+
+.doccard .stale {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.doccard[data-ghost="true"] {
+  border-style: dashed;
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+/* the model visibly running inside the host ring */
+.acthink .as-agent {
+  position: relative;
+}
+
+.acthink .as-agent::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  background: var(--ink);
+  animation: thinkbeat 700ms ease-in-out infinite;
+}
+
+@keyframes thinkbeat {
+  50% {
+    transform: scale(1.45);
+    opacity: 0.75;
+  }
+}
+
+/* progress bar */
+.pbar {
+  flex: 1 1 8rem;
+  height: 0.7rem;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--card);
+  overflow: hidden;
+  align-self: center;
+}
+
+.pbar i {
+  display: block;
+  height: 100%;
+  width: calc(var(--p, 0) * 100%);
+  background: var(--amber);
+  transition: width 320ms var(--ease-move);
+}
+
+.pbar[data-state="cancelled"] i {
+  background: var(--red);
+}
+
+.pbar[data-state="done"] i {
+  background: var(--teal);
+}
+
+.gchoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cappills span,
+  .shelf-item,
+  .doccard.bump .v {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+
+  .acthink .as-agent::after {
+    animation: none;
   }
 }

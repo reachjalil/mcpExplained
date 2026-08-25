@@ -5,62 +5,65 @@ import { useStage } from "@/components/machine/stage";
 import { Machine, Actor } from "@/components/machine/Machine";
 import { RectButton } from "@/components/machine/buttons";
 
-/** prompts: user-invoked templates the server fills in. */
+const TEMPLATES: Record<string, { hole: string; filled: string }> = {
+  summarize: {
+    hole: "Summarize ____ in three bullets.",
+    filled: 'Summarize report.md in three bullets.',
+  },
+  translate: {
+    hole: "Translate ____ to French.",
+    filled: "Translate report.md to French.",
+  },
+};
+
+/** The slot is the concept: a prompt is a template with holes, and
+ *  prompts/get is the server filling them into a ready message. */
 export function PromptsDemo() {
-  const { stageRef, actor, fly, pulse, chip, wait } = useStage();
-  const [listed, setListed] = useState(false);
-  const [filled, setFilled] = useState<string | null>(null);
+  const { stageRef, actor, fly, pulse, wait } = useStage();
+  const [picked, setPicked] = useState<string | null>(null);
+  const [filled, setFilled] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  const list = async () => {
+  const pick = async (name: string) => {
     if (busy) return;
     setBusy(true);
-    await fly({ from: "agent", to: "server", tag: "prompts/list" });
-    pulse("server");
-    await wait(280);
-    await fly({ from: "server", to: "agent", kind: "res", tag: "2 prompts" });
-    chip("agent", "summarize · translate", "res");
-    setListed(true);
-    setBusy(false);
-  };
-
-  const get = async () => {
-    if (busy) return;
-    setBusy(true);
+    setPicked(name);
+    setFilled(false);
     await fly({ from: "agent", to: "server", tag: "prompts/get" });
     pulse("server");
-    await wait(300);
+    await wait(320);
     await fly({ from: "server", to: "agent", kind: "res", tag: "messages" });
     pulse("agent");
-    setFilled('user: "Summarize report.md in three bullets."');
+    setFilled(true);
     setBusy(false);
   };
 
   return (
     <Machine
       stageRef={stageRef}
-      label="A template, filled by the server"
+      label="A template, filled"
+      minHeight={150}
       controls={
         <>
-          <RectButton onClick={list} disabled={busy} tone="amber">
-            prompts/list
+          <RectButton onClick={() => pick("summarize")} disabled={busy} tone="amber">
+            /summarize
           </RectButton>
-          <RectButton onClick={get} disabled={busy || !listed}>
-            prompts/get summarize
+          <RectButton onClick={() => pick("translate")} disabled={busy}>
+            /translate
           </RectButton>
         </>
       }
       rule={
-        <div className="mnote" data-show={filled !== null}>
+        <div className="mnote" data-show={picked !== null}>
           <div className="mnote-inner">
-            <span className="mnote-k">ready to send</span>
-            <span key={filled ?? ""} className="mnote-v">
-              {filled}
+            <span className="mnote-k">{filled ? "ready to send" : "template"}</span>
+            <span key={`${picked}-${filled}`} className="mnote-v">
+              {picked ? (filled ? TEMPLATES[picked].filled : TEMPLATES[picked].hole) : ""}
             </span>
           </div>
         </div>
       }
-      caption="the server returns finished messages. the person picks the template; the model never chooses prompts"
+      caption="you picked it, the server filled the hole. the model was never asked"
     >
       <Actor refCb={actor("agent")} kind="agent" name="host" />
       <Actor refCb={actor("server")} kind="server" name="notes" />

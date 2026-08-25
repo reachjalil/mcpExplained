@@ -5,23 +5,28 @@ import { useStage } from "@/components/machine/stage";
 import { Machine, Actor } from "@/components/machine/Machine";
 import { RectButton } from "@/components/machine/buttons";
 
-/** Basics: one click runs the initialize handshake and shows what each
- *  side declared it can do. */
+const CLIENT_CAPS = ["sampling", "elicitation", "roots"];
+const SERVER_CAPS = ["tools", "resources", "prompts"];
+
+/** The handshake's animation is the concept: capabilities are declared
+ *  once, up front, and stamp in under the side that owns them. */
 export function HandshakeDemo() {
-  const { stageRef, actor, fly, pulse, chip, wait } = useStage();
-  const [connected, setConnected] = useState(false);
+  const { stageRef, actor, fly, pulse, wait } = useStage();
+  const [phase, setPhase] = useState<"idle" | "client" | "done">("idle");
   const [busy, setBusy] = useState(false);
 
   const connect = async () => {
     if (busy) return;
     setBusy(true);
+    setPhase("idle");
+    await wait(80);
     await fly({ from: "agent", to: "server", tag: "initialize" });
     pulse("server");
-    await wait(300);
+    setPhase("client"); // the request carried the client's declarations
+    await wait(500);
     await fly({ from: "server", to: "agent", kind: "res", tag: "capabilities" });
     pulse("agent");
-    chip("agent", "session open", "res");
-    setConnected(true);
+    setPhase("done");
     setBusy(false);
   };
 
@@ -29,26 +34,38 @@ export function HandshakeDemo() {
     <Machine
       stageRef={stageRef}
       label="The initialize handshake"
+      minHeight={150}
       controls={
         <RectButton onClick={connect} disabled={busy} tone="amber">
-          {connected ? "reconnect" : "connect"}
+          {phase === "done" ? "reconnect" : "connect"}
         </RectButton>
       }
-      rule={
-        <div className="mnote" data-show={connected}>
-          <div className="mnote-inner">
-            <span className="mnote-k">negotiated</span>
-            <span className="mnote-v">
-              server: tools · resources · prompts&ensp;|&ensp;client: sampling
-              · elicitation · roots
-            </span>
-          </div>
-        </div>
-      }
-      caption="each side names its capabilities once, up front. everything after is scoped by this exchange"
+      caption="neither side may use anything the other didn't declare here"
     >
-      <Actor refCb={actor("agent")} kind="agent" name="host · client" />
-      <Actor refCb={actor("server")} kind="server" name="server" />
+      <div className="acol">
+        <Actor refCb={actor("agent")} kind="agent" name="host · client" />
+        <div className="cappills" aria-live="polite">
+          {phase !== "idle"
+            ? CLIENT_CAPS.map((c, i) => (
+                <span key={c} style={{ "--d": `${i * 90}ms` } as React.CSSProperties}>
+                  {c}
+                </span>
+              ))
+            : null}
+        </div>
+      </div>
+      <div className="acol">
+        <Actor refCb={actor("server")} kind="server" name="server" />
+        <div className="cappills" aria-live="polite">
+          {phase === "done"
+            ? SERVER_CAPS.map((c, i) => (
+                <span key={c} style={{ "--d": `${i * 90}ms` } as React.CSSProperties}>
+                  {c}
+                </span>
+              ))
+            : null}
+        </div>
+      </div>
     </Machine>
   );
 }

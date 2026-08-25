@@ -5,11 +5,12 @@ import { useStage } from "@/components/machine/stage";
 import { Machine, Actor } from "@/components/machine/Machine";
 import { RectButton } from "@/components/machine/buttons";
 
-/** tools: one button per spec method. list discovers, call executes. */
+/** The shelf is the concept: before discovery the server is a mystery;
+ *  after tools/list its functions exist, and a call lights one up. */
 export function ToolsDemo() {
   const { stageRef, actor, fly, pulse, chip, wait } = useStage();
   const [listed, setListed] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [active, setActive] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const list = async () => {
@@ -17,9 +18,8 @@ export function ToolsDemo() {
     setBusy(true);
     await fly({ from: "agent", to: "server", tag: "tools/list" });
     pulse("server");
-    await wait(280);
+    await wait(260);
     await fly({ from: "server", to: "agent", kind: "res", tag: "2 tools" });
-    chip("agent", "search_files · read_file", "res");
     setListed(true);
     setBusy(false);
   };
@@ -27,12 +27,14 @@ export function ToolsDemo() {
   const call = async () => {
     if (busy) return;
     setBusy(true);
+    setActive("search_files");
     await fly({ from: "agent", to: "server", tag: "tools/call" });
     pulse("server");
-    await wait(380);
-    await fly({ from: "server", to: "agent", kind: "res", tag: "result" });
+    await wait(360);
+    await fly({ from: "server", to: "agent", kind: "res", tag: "2 matches" });
     pulse("agent");
-    setResult('search_files("invoice") → 2 matches');
+    chip("agent", 'search_files("invoice") ✓', "res");
+    window.setTimeout(() => setActive(null), 900);
     setBusy(false);
   };
 
@@ -40,9 +42,10 @@ export function ToolsDemo() {
     <Machine
       stageRef={stageRef}
       label="Discover, then execute"
+      minHeight={150}
       controls={
         <>
-          <RectButton onClick={list} disabled={busy} tone="amber">
+          <RectButton onClick={list} disabled={busy || listed} tone="amber">
             tools/list
           </RectButton>
           <RectButton onClick={call} disabled={busy || !listed}>
@@ -50,20 +53,28 @@ export function ToolsDemo() {
           </RectButton>
         </>
       }
-      rule={
-        <div className="mnote" data-show={result !== null}>
-          <div className="mnote-inner">
-            <span className="mnote-k">last result</span>
-            <span key={result ?? ""} className="mnote-v">
-              {result}
-            </span>
-          </div>
-        </div>
-      }
-      caption="tools/call stays greyed out until the list has been fetched: you can only call what discovery returned"
+      caption="call stays locked until the list exists: you can only call what discovery returned"
     >
       <Actor refCb={actor("agent")} kind="agent" name="host" />
-      <Actor refCb={actor("server")} kind="server" name="files" />
+      <div className="acol">
+        <Actor refCb={actor("server")} kind="server" name="files" />
+        <div className="shelf" aria-live="polite">
+          {listed ? (
+            <>
+              <span className="shelf-item" data-on={active === "search_files"} style={{ "--d": "0ms" } as React.CSSProperties}>
+                <i aria-hidden="true" />
+                search_files
+              </span>
+              <span className="shelf-item" data-on={false} style={{ "--d": "90ms" } as React.CSSProperties}>
+                <i aria-hidden="true" />
+                read_file
+              </span>
+            </>
+          ) : (
+            <span className="shelf-empty">tools unknown</span>
+          )}
+        </div>
+      </div>
     </Machine>
   );
 }

@@ -10,6 +10,7 @@ export function SamplingDemo() {
   const { stageRef, actor, fly, deny, pulse, chip, wait } = useStage();
   const [pending, setPending] = useState(false);
   const [outcome, setOutcome] = useState<string | null>(null);
+  const [thinking, setThinking] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const request = async () => {
@@ -24,12 +25,13 @@ export function SamplingDemo() {
   const approve = async () => {
     setPending(false);
     setBusy(true);
-    chip("agent", "model runs, inside the host", "ink");
-    pulse("agent");
-    await wait(900);
+    setThinking(true);
+    chip("agent", "the model runs in here", "ink");
+    await wait(1300);
+    setThinking(false);
     await fly({ from: "agent", to: "server", kind: "res", tag: "completion" });
     pulse("server");
-    setOutcome("server got its summary. it never saw the model, a key, or your other context");
+    setOutcome("the server got a completion. it never saw the model, a key, or your context");
     setBusy(false);
   };
 
@@ -77,9 +79,14 @@ export function SamplingDemo() {
           </div>
         </div>
       }
-      caption="the request starts on the right. the model, and the decision, stay on the left"
+      caption="watch the ring while it runs: the model never leaves the host"
     >
-      <Actor refCb={actor("agent")} kind="agent" name="host · model inside" />
+      <Actor
+        refCb={actor("agent")}
+        kind="agent"
+        name="host · model inside"
+        className={thinking ? "acthink" : ""}
+      />
       <Actor refCb={actor("server")} kind="server" name="notes" />
     </Machine>
   );

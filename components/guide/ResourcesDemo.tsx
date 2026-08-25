@@ -5,36 +5,25 @@ import { useStage } from "@/components/machine/stage";
 import { Machine, Actor } from "@/components/machine/Machine";
 import { RectButton, Toggle } from "@/components/machine/buttons";
 
-/** resources: read-only context, and the subscription that keeps it fresh. */
+/** The two copies are the concept: the server's document moves on, the
+ *  host's copy visibly goes stale, and the subscription is what tells
+ *  you to read again. */
 export function ResourcesDemo() {
-  const { stageRef, actor, fly, pulse, chip, wait } = useStage();
-  const [listed, setListed] = useState(false);
-  const [content, setContent] = useState<string | null>(null);
+  const { stageRef, actor, fly, pulse, chip } = useStage();
+  const [serverV, setServerV] = useState(1);
+  const [hostV, setHostV] = useState<number | null>(null);
   const [subscribed, setSubscribed] = useState(false);
+  const [bump, setBump] = useState(0);
   const [busy, setBusy] = useState(false);
-  const version = useRef(1);
   const pushTimer = useRef(0);
-
-  const list = async () => {
-    if (busy) return;
-    setBusy(true);
-    await fly({ from: "agent", to: "server", tag: "resources/list" });
-    pulse("server");
-    await wait(280);
-    await fly({ from: "server", to: "agent", kind: "res", tag: "1 resource" });
-    chip("agent", "notes://report.md", "res");
-    setListed(true);
-    setBusy(false);
-  };
 
   const read = async () => {
     if (busy) return;
     setBusy(true);
     await fly({ from: "agent", to: "server", tag: "resources/read" });
     pulse("server");
-    await wait(320);
-    await fly({ from: "server", to: "agent", kind: "res" });
-    setContent(`report.md · v${version.current}`);
+    await fly({ from: "server", to: "agent", kind: "res", tag: `v${serverV}` });
+    setHostV(serverV);
     setBusy(false);
   };
 
@@ -42,27 +31,27 @@ export function ResourcesDemo() {
     setSubscribed(on);
     window.clearTimeout(pushTimer.current);
     if (on) {
-      // The server pushes an update notification on its own schedule —
-      // no request precedes this flight.
+      // The document changes on the server's schedule, not yours.
       pushTimer.current = window.setTimeout(async () => {
-        version.current += 1;
+        setServerV((v) => v + 1);
+        setBump((b) => b + 1);
         await fly({ from: "server", to: "agent", tag: "updated" });
         pulse("agent");
-        chip("agent", "resource changed, re-read it", "ink");
-      }, 1600);
+        chip("agent", "your copy is stale. read again", "deny");
+      }, 1500);
     }
   };
+
+  const stale = hostV !== null && hostV < serverV;
 
   return (
     <Machine
       stageRef={stageRef}
-      label="Context the host can read"
+      label="A document and its copy"
+      minHeight={150}
       controls={
         <>
-          <RectButton onClick={list} disabled={busy} tone="amber">
-            resources/list
-          </RectButton>
-          <RectButton onClick={read} disabled={busy || !listed}>
+          <RectButton onClick={read} disabled={busy} tone="amber">
             resources/read
           </RectButton>
           <Toggle checked={subscribed} onChange={subscribe}>
@@ -70,20 +59,27 @@ export function ResourcesDemo() {
           </Toggle>
         </>
       }
-      rule={
-        <div className="mnote" data-show={content !== null}>
-          <div className="mnote-inner">
-            <span className="mnote-k">in context</span>
-            <span key={content ?? ""} className="mnote-v">
-              {content}
-            </span>
-          </div>
-        </div>
-      }
-      caption="flip subscribe and wait a beat: the server sends notifications/resources/updated without being asked"
+      caption="without the subscription the host would keep trusting v1 forever"
     >
-      <Actor refCb={actor("agent")} kind="agent" name="host" />
-      <Actor refCb={actor("server")} kind="server" name="notes" />
+      <div className="acol">
+        <Actor refCb={actor("agent")} kind="agent" name="host" />
+        <span className="doccard" data-ghost={hostV === null} aria-live="polite">
+          {hostV === null ? (
+            "no copy yet"
+          ) : (
+            <>
+              report.md <span className="v">v{hostV}</span>
+              {stale ? <span className="stale">stale</span> : null}
+            </>
+          )}
+        </span>
+      </div>
+      <div className="acol">
+        <Actor refCb={actor("server")} kind="server" name="notes" />
+        <span key={bump} className={bump ? "doccard bump" : "doccard"}>
+          report.md <span className="v">v{serverV}</span>
+        </span>
+      </div>
     </Machine>
   );
 }
