@@ -5,65 +5,92 @@ import { useStage } from "@/components/machine/stage";
 import { Machine, Actor } from "@/components/machine/Machine";
 import { RectButton } from "@/components/machine/buttons";
 
-const CLIENT_CAPS = ["sampling", "elicitation", "roots"];
-const SERVER_CAPS = ["tools", "resources", "prompts"];
+const CLIENT_CAPS: Array<[string, string]> = [
+  ["sampling", "#g-sampling"],
+  ["elicitation", "#g-elicitation"],
+  ["roots", "#g-roots"],
+];
 
-/** The handshake's animation is the concept: capabilities are declared
- *  once, up front, and stamp in under the side that owns them. */
+const SERVER_CAPS: Array<[string, string]> = [
+  ["tools", "#g-tools"],
+  ["resources", "#g-resources"],
+  ["prompts", "#g-prompts"],
+];
+
+type SessionState = "idle" | "connecting" | "open";
+
+const STATE_LABEL: Record<SessionState, string> = {
+  idle: "no session",
+  connecting: "initializing…",
+  open: "session open",
+};
+
+/**
+ * The lifecycle, played straight from the spec: initialize carries the
+ * client's declarations, the result carries the server's, and the
+ * initialized notification opens the session. Every capability pill is a
+ * link to its concept card below.
+ */
 export function HandshakeDemo() {
   const { stageRef, actor, fly, pulse, wait } = useStage();
-  const [phase, setPhase] = useState<"idle" | "client" | "done">("idle");
-  const [busy, setBusy] = useState(false);
+  const [state, setState] = useState<SessionState>("idle");
+  const [clientDeclared, setClientDeclared] = useState(false);
+  const [serverDeclared, setServerDeclared] = useState(false);
 
   const connect = async () => {
-    if (busy) return;
-    setBusy(true);
-    setPhase("idle");
+    if (state === "connecting") return;
+    setState("connecting");
+    setClientDeclared(false);
+    setServerDeclared(false);
     await wait(80);
     await fly({ from: "agent", to: "server", tag: "initialize" });
     pulse("server");
-    setPhase("client"); // the request carried the client's declarations
-    await wait(500);
+    setClientDeclared(true); // the request carried these
+    await wait(480);
     await fly({ from: "server", to: "agent", kind: "res", tag: "capabilities" });
     pulse("agent");
-    setPhase("done");
-    setBusy(false);
+    setServerDeclared(true); // the result carried these
+    await wait(480);
+    await fly({ from: "agent", to: "server", tag: "initialized", duration: 440 });
+    pulse("server");
+    setState("open");
   };
+
+  const pills = (caps: Array<[string, string]>) =>
+    caps.map(([name, href], i) => (
+      <a key={name} href={href} style={{ "--d": `${i * 90}ms` } as React.CSSProperties}>
+        {name}
+      </a>
+    ));
 
   return (
     <Machine
       stageRef={stageRef}
-      label="The initialize handshake"
-      minHeight={150}
+      label="Opening a session"
+      minHeight={196}
       controls={
-        <RectButton onClick={connect} disabled={busy} tone="amber">
-          {phase === "done" ? "reconnect" : "connect"}
+        <RectButton onClick={connect} disabled={state === "connecting"} tone="amber">
+          {state === "open" ? "reconnect" : "connect"}
         </RectButton>
       }
-      caption="neither side may use anything the other didn't declare here"
+      caption="the pills are live: each one links to its concept below"
     >
+      <span className="sstate" data-s={state} aria-live="polite">
+        <i aria-hidden="true" />
+        {STATE_LABEL[state]}
+      </span>
       <div className="acol">
         <Actor refCb={actor("agent")} kind="agent" name="host · client" />
-        <div className="cappills" aria-live="polite">
-          {phase !== "idle"
-            ? CLIENT_CAPS.map((c, i) => (
-                <span key={c} style={{ "--d": `${i * 90}ms` } as React.CSSProperties}>
-                  {c}
-                </span>
-              ))
-            : null}
+        <span className="capk">client declares</span>
+        <div className="cappills">
+          {clientDeclared ? pills(CLIENT_CAPS) : null}
         </div>
       </div>
       <div className="acol">
         <Actor refCb={actor("server")} kind="server" name="server" />
-        <div className="cappills" aria-live="polite">
-          {phase === "done"
-            ? SERVER_CAPS.map((c, i) => (
-                <span key={c} style={{ "--d": `${i * 90}ms` } as React.CSSProperties}>
-                  {c}
-                </span>
-              ))
-            : null}
+        <span className="capk">server declares</span>
+        <div className="cappills">
+          {serverDeclared ? pills(SERVER_CAPS) : null}
         </div>
       </div>
     </Machine>

@@ -116,8 +116,9 @@ export default function Guide() {
               { k: "shape", v: <>one session · one client · one server</> },
             ]}
           />
-          <HandshakeDemo />
-          <WireBlock label="on the wire · the handshake, trimmed">
+          <div className="gsession">
+            <HandshakeDemo />
+            <WireBlock label="on the wire · the handshake, trimmed">
             <b>→ initialize</b>{"\n"}
             {`{ "method": "initialize",
   "params": {
@@ -132,7 +133,8 @@ export default function Guide() {
     "capabilities": { "tools": {}, "resources": { "subscribe": true }, "prompts": {} },
     "serverInfo": { "name": "notes", "version": "2.1" }
   } }`}
-          </WireBlock>
+            </WireBlock>
+          </div>
           <p className="specref">
             <b>spec</b>
             <a href={`${SPEC}/specification/2025-06-18`} target="_blank" rel="noreferrer noopener">

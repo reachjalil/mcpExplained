@@ -182,6 +182,104 @@
   }
 }
 
+/* --- The session row: machine and its payload side by side ------------------ */
+
+.gsession {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+  gap: 1.4rem 2.4rem;
+  align-items: start;
+  margin: 1rem 0 0.4rem;
+}
+
+.gsession .machine,
+.gsession .wire {
+  margin-block: 0;
+}
+
+/* --- Session state badge ------------------------------------------------------ */
+
+.sstate {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.18rem 0.6rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.sstate i {
+  font-style: normal;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.sstate[data-s="connecting"] i {
+  background: var(--amber);
+  animation: hintblink 0.9s ease-in-out infinite;
+}
+
+.sstate[data-s="open"] {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.sstate[data-s="open"] i {
+  background: var(--teal);
+}
+
+/* --- Capability pills: declared, labeled, and clickable ----------------------- */
+
+.capk {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cappills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  gap: 0.3rem;
+  max-width: 11.5rem;
+  /* space for both rows is reserved up front so nothing on the page moves
+     when the pills stamp in */
+  min-height: 3.55rem;
+}
+
+.cappills a {
+  padding: 0.1rem 0.5rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-decoration: none;
+  animation: chipin-lite 320ms var(--ease-pop) backwards;
+  animation-delay: var(--d, 0ms);
+  transition: background 140ms;
+}
+
+.cappills a:hover {
+  background: var(--amber);
+}
+
 /* --- Legend: decode any figure at a glance ---------------------------------- */
 
 .gcast {
@@ -444,28 +542,6 @@
   gap: 0.55rem;
 }
 
-/* capability pills stamped in by the handshake */
-.cappills {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.3rem;
-  max-width: 11rem;
-  min-height: 1.5rem;
-}
-
-.cappills span {
-  padding: 0.1rem 0.5rem;
-  border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  background: var(--card);
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  font-weight: 600;
-  animation: chipin-lite 320ms var(--ease-pop) backwards;
-  animation-delay: var(--d, 0ms);
-}
-
 @keyframes chipin-lite {
   from {
     opacity: 0;
@@ -620,7 +696,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cappills span,
+  .cappills a,
   .shelf-item,
   .doccard.bump .v {
     animation-duration: 1ms !important;
