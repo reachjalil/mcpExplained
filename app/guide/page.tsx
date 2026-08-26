@@ -23,6 +23,7 @@ function Toc() {
   return (
     <nav className="gtoc" aria-label="Guide contents">
       <p className="gtoc-k">basics</p>
+      <a href="#g-terms">who&apos;s who</a>
       <a href="#g-basics">the session</a>
       <p className="gtoc-k">
         <i data-g="server" aria-hidden="true" /> the server
@@ -47,6 +48,7 @@ function Toc() {
 }
 
 const JUMPS: Array<[string, string]> = [
+  ["#g-terms", "who's who"],
   ["#g-basics", "session"],
   ["#g-tools", "tools"],
   ["#g-resources", "resources"],
@@ -104,7 +106,68 @@ export default function Guide() {
         </p>
 
         {/* ------------------------------------------------------------- */}
+        <GWide id="g-terms" title="Who&apos;s who">
+          <p className="gwhat">
+            Five words the rest of this page leans on. The confusing one is{" "}
+            <strong>host</strong>: it is simply the spec&apos;s formal name
+            for the agent application itself.
+          </p>
+          <GFacts
+            items={[
+              {
+                k: "agent · host",
+                v: (
+                  <>
+                    the AI application you talk to: a chat app, an IDE, Claude.
+                    The spec says <b>host</b>; this page mostly says{" "}
+                    <b>agent</b>. Same thing.
+                  </>
+                ),
+              },
+              {
+                k: "client",
+                v: (
+                  <>
+                    a small piece <em>inside</em> the host that holds one
+                    connection to one server. Five servers, five clients, one
+                    host.
+                  </>
+                ),
+              },
+              {
+                k: "server",
+                v: (
+                  <>
+                    the capability being plugged in: files, flights, a
+                    calendar. One job each, no knowledge of the others.
+                  </>
+                ),
+              },
+              {
+                k: "model",
+                v: (
+                  <>
+                    the LLM inside the host. It only writes text; the host
+                    turns that text into real calls.
+                  </>
+                ),
+              },
+              {
+                k: "you",
+                v: <>the person. Some hops park until you click.</>,
+              },
+            ]}
+          />
+        </GWide>
+
+        {/* ------------------------------------------------------------- */}
         <GWide id="g-basics" title="The session">
+          <p className="gwhat">
+            A session is the live connection between an agent and one server.
+            Opening it is a handshake: each side lists what it can do, and
+            that exchange defines everything allowed afterwards. Click{" "}
+            <strong>connect</strong> to watch one open.
+          </p>
           <p className="mchips">
             <code>initialize</code>
             <code>notifications/initialized</code>
@@ -158,6 +221,14 @@ export default function Guide() {
               side="server"
               title="Tools"
               methods={["tools/list", "tools/call", "…/list_changed"]}
+              what={
+                <>
+                  Tools are how a server lets the agent <em>do</em> things:
+                  search files, send an email, book a flight. The model decides
+                  a tool is needed, the host makes the call, and the result
+                  lands back in the conversation.
+                </>
+              }
               facts={[
                 { k: "is", v: <>a function with a name and a JSON schema for its arguments</> },
                 { k: "called by", v: <>the model; the host executes</> },
@@ -175,6 +246,14 @@ export default function Guide() {
               side="server"
               title="Resources"
               methods={["resources/list", "resources/read", "resources/subscribe"]}
+              what={
+                <>
+                  Resources are how a server shares things to <em>read</em>:
+                  files, tables, logs. Reading one changes nothing, which is
+                  why the host can pull them into context freely. Subscribing
+                  keeps your copy honest when the original moves on.
+                </>
+              }
               facts={[
                 { k: "is", v: <>content behind a URI: a file, a table, a log</> },
                 { k: "chosen by", v: <>the host or the person, never the model</> },
@@ -192,6 +271,13 @@ export default function Guide() {
               side="server"
               title="Prompts"
               methods={["prompts/list", "prompts/get"]}
+              what={
+                <>
+                  Prompts are canned requests a server offers the person:
+                  pick one, the server fills in the details, and a
+                  ready-to-send message appears. Think slash commands.
+                </>
+              }
               facts={[
                 { k: "is", v: <>a named template the server fills into ready messages</> },
                 { k: "invoked by", v: <>the person; slash-command material</> },
@@ -217,6 +303,14 @@ export default function Guide() {
               side="agent"
               title="Sampling"
               methods={["sampling/createMessage"]}
+              what={
+                <>
+                  Sampling lets a server borrow the agent&apos;s model for its
+                  own thinking: summarize this, classify that. The server
+                  hands over a question and gets an answer; it never touches
+                  the keys or your conversation.
+                </>
+              }
               facts={[
                 { k: "is", v: <>the server borrowing the model, through the host</> },
                 { k: "hidden", v: <>keys, model choice, your other context</> },
@@ -234,6 +328,14 @@ export default function Guide() {
               side="agent"
               title="Elicitation"
               methods={["elicitation/create"]}
+              what={
+                <>
+                  Sometimes a server needs the person to decide something mid
+                  job: which flight, which folder. Elicitation is that
+                  question, asked through the agent&apos;s own UI and answered
+                  with a click.
+                </>
+              }
               facts={[
                 { k: "is", v: <>the server asking the person a question</> },
                 { k: "rendered by", v: <>the host&apos;s UI; server screens never cross</> },
@@ -250,6 +352,13 @@ export default function Guide() {
               side="agent"
               title="Roots"
               methods={["roots/list", "…/list_changed"]}
+              what={
+                <>
+                  Roots are how the agent tells a server where it is welcome
+                  to work: these folders, this repo. A courtesy boundary the
+                  server should respect, not a lock.
+                </>
+              }
               facts={[
                 { k: "is", v: <>the host declaring where a server should operate</> },
                 { k: "power", v: <>scoping, not enforcement; locks stay with the files</> },
@@ -266,6 +375,11 @@ export default function Guide() {
         {/* ------------------------------------------------------------- */}
         <div className="gmeta2">
           <GWide id="g-progress" title="Progress · cancellation">
+            <p className="gwhat">
+              Long jobs shouldn&apos;t go silent. Progress ticks in while the
+              work runs, and a cancellation tells the other side to stop.
+              Neither ever gets a reply.
+            </p>
             <p className="mchips">
               <code>notifications/progress</code>
               <code>notifications/cancelled</code>
@@ -287,6 +401,11 @@ export default function Guide() {
           </GWide>
 
           <GWide id="g-transports" title="Transports">
+            <p className="gwhat">
+              The same messages can travel two ways: stdio when the agent
+              starts the server on your machine, Streamable HTTP when the
+              server lives somewhere else.
+            </p>
             <p className="mchips">
               <code>stdio</code>
               <code>Streamable HTTP</code>

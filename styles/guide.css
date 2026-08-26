@@ -411,6 +411,16 @@
   height: 0.55rem;
 }
 
+/* The two-sentence explainer: what this is and what it does, for someone
+   landing cold. Everything below it is lookup material. */
+.gwhat {
+  margin: 0.5rem 0 0.2rem;
+  font-size: 1.01rem;
+  line-height: 1.6;
+  max-width: 46rem;
+  text-wrap: pretty;
+}
+
 .mchips {
   display: flex;
   flex-wrap: wrap;

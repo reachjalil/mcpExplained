@@ -30,6 +30,7 @@ export function GCard({
   side,
   title,
   methods,
+  what,
   facts,
   children,
   spec,
@@ -39,6 +40,7 @@ export function GCard({
   side: Side;
   title: string;
   methods: string[];
+  what: ReactNode;
   facts: Fact[];
   children: ReactNode;
   spec: string;
@@ -53,6 +55,7 @@ export function GCard({
           {SIDE_LABEL[side]}
         </span>
       </div>
+      <p className="gwhat">{what}</p>
       <p className="mchips">
         {methods.map((m) => (
           <code key={m}>{m}</code>
