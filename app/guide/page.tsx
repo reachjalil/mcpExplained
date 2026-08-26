@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SITE_URL } from "@/lib/site";
 import { WireBlock } from "@/components/ui/WireBlock";
 import { GCard, GFacts, GWide } from "@/components/guide/shared";
 import { HandshakeDemo } from "@/components/guide/HandshakeDemo";
@@ -11,10 +12,34 @@ import { ElicitationDemo } from "@/components/guide/ElicitationDemo";
 import { RootsDemo } from "@/components/guide/RootsDemo";
 import { ProgressDemo } from "@/components/guide/ProgressDemo";
 
+const GUIDE_TITLE = "A guide to MCP";
+const GUIDE_DESC =
+  "Every MCP concept, split the way the protocol is split: server on one side, agent on the other. Methods, facts, spec links, and a runnable demo for each.";
+
 export const metadata: Metadata = {
-  title: "A guide to MCP",
-  description:
-    "Every MCP concept, split the way the protocol is split: server on one side, agent on the other. Methods, facts, spec links, and a runnable demo for each.",
+  title: GUIDE_TITLE,
+  description: GUIDE_DESC,
+  openGraph: {
+    title: GUIDE_TITLE,
+    description: GUIDE_DESC,
+    type: "article",
+    url: `${SITE_URL}/guide/`,
+    siteName: "mcpexplained",
+    images: [
+      {
+        url: `${SITE_URL}/og-guide.png`,
+        width: 1200,
+        height: 630,
+        alt: "A guide to MCP · every concept, a runnable figure each",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: GUIDE_TITLE,
+    description: GUIDE_DESC,
+    images: [`${SITE_URL}/og-guide.png`],
+  },
 };
 
 const SPEC = "https://modelcontextprotocol.io";

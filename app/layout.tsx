@@ -37,6 +37,21 @@ export const metadata: Metadata = {
     description: SITE_TAGLINE,
     type: "website",
     url: SITE_URL,
+    siteName: SITE_NAME,
+    images: [
+      {
+        url: `${SITE_URL}/og.png`,
+        width: 1200,
+        height: 630,
+        alt: "mcpexplained · learn MCP by poking at it",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: SITE_TAGLINE,
+    images: [`${SITE_URL}/og.png`],
   },
 };
 

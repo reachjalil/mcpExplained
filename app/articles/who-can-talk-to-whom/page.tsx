@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
 import { InView } from "@/components/ui/InView";
 import { G } from "@/components/ui/Glyph";
 import { WireBlock } from "@/components/ui/WireBlock";
@@ -9,10 +10,34 @@ import { AppAsks } from "@/components/toys/AppAsks";
 import { YouApprove } from "@/components/toys/YouApprove";
 import { BoundaryMap } from "@/components/toys/BoundaryMap";
 
+const POST_TITLE = "Who can talk to whom?";
+const POST_DESC =
+  "MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding the keys. Five machines let you click through the boundaries.";
+
 export const metadata: Metadata = {
-  title: "Who can talk to whom?",
-  description:
-    "MCP is a story about access: apps that have to ask, servers that stay strangers, and one agent holding the keys. Five machines let you click through the boundaries.",
+  title: POST_TITLE,
+  description: POST_DESC,
+  openGraph: {
+    title: POST_TITLE,
+    description: POST_DESC,
+    type: "article",
+    url: `${SITE_URL}/articles/who-can-talk-to-whom/`,
+    siteName: "mcpexplained",
+    images: [
+      {
+        url: `${SITE_URL}/og.png`,
+        width: 1200,
+        height: 630,
+        alt: "mcpexplained · learn MCP by poking at it",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: POST_TITLE,
+    description: POST_DESC,
+    images: [`${SITE_URL}/og.png`],
+  },
 };
 
 function H2({ n, children }: { n: string; children: string }) {
